@@ -11,18 +11,24 @@ import UbicacionDesc from 'common/UbicacionDesc';
 
 const PATH_EMPLEADO_SERVICE = Constant.EMPLEADO_API+Constant.EMPLEADO_SERVICE;
 const PATH_CARGOS_SERVICE = Constant.EMPLEADO_API+Constant.CARGOS_SERVICE;
+const PATH_TIPO_DOCUMENTOS_SERVICE = Constant.EMPLEADO_API+Constant.TIPO_DOCUMENTOS_SERVICE;
 
 class EmpleadoEdit extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: true,
       fields: {},
       errors: {},
       formState: '',
       cargos:[],
-      firstCargo:''
+      tipoDocumentos:[],
+      firstCargo:'',
+      firstTipoDocumento:''
     }
+
+    this.resetForm();
   }
 
   async componentDidMount() {
@@ -38,9 +44,23 @@ class EmpleadoEdit extends Component {
 
     axios.get(PATH_CARGOS_SERVICE)
       .then(result => {
-        let fields = this.state.fields;
+        let {fields} = this.state;
         fields.cargo = result.data[0].id;
-        this.setState({cargos: result.data, fields: fields});
+        
+        let firstCargo = result.data[0].id;
+        this.setState({cargos: result.data, fields: fields, firstCargo: firstCargo});
+      }).catch(error => this.setState({
+        error
+      })
+    );
+
+    axios.get(PATH_TIPO_DOCUMENTOS_SERVICE)
+      .then(result => {
+        let {fields} = this.state;
+        fields.tipoDocumento = result.data[0].id;
+        
+        let firstTipoDocumento = result.data[0].id;
+        this.setState({tipoDocumentos: result.data, fields: fields, firstTipoDocumento: firstTipoDocumento});
       }).catch(error => this.setState({
         error
       })
@@ -48,8 +68,11 @@ class EmpleadoEdit extends Component {
   }
 
   resetForm = () =>{
-    let fields = this.state.fields;
+    let {fields} = this.state;
 
+    fields.tipoDocumento = (fields.id) ? this.state.firstTipoDocumento : '';
+    fields.numeroDocumento = '';
+    fields.cargo = (fields.id) ? this.state.firstCargo : '';
     fields.nombres = '';
     fields.apellidos = '';
     fields.salario = '';
@@ -58,23 +81,23 @@ class EmpleadoEdit extends Component {
     fields.telefono = '';
     fields.contactoEmergenciaNombres = '';
     fields.contactoEmergenciaApellidos = '';
-    fields.contactoEmergenciaTelefono = '';
-    fields.cargo = this.state.firstCargo;
+    fields.contactoEmergenciaTelefono = '';    
 
-    this.setState({fields: fields});
+    this.setState(fields);
   }
 
   handleValidation(){
-    let fields = this.state.fields;
+    let {fields} = this.state;
     let errors = {
       nombres: validateRequired(fields.nombres, "nombres"),
       apellidos: validateRequired(fields.apellidos, "apellidos"),
       salario: validateRequired(fields.salario, "salario"),
-      direccion: validateRequired(fields.direccion, "direccion")
+      direccion: validateRequired(fields.direccion, "direccion"),
+      numeroDocumento: validateRequired(fields.numeroDocumento, "numero de documento")
     };
     let formState = '';
 
-    if(errors.nombres || errors.apellidos || errors.salario || errors.direccion){
+    if(errors.nombres || errors.apellidos || errors.salario || errors.direccion || errors.numeroDocumento){
       formState = 'invalid';
     }
     this.setState({errors: errors, formState: formState});
@@ -82,11 +105,9 @@ class EmpleadoEdit extends Component {
     return formState ==! 'invalid';
   }
 
-  contactSubmit = async (e) =>{
-    const fields = this.state.fields;
-    const id = fields["id"];
-
-    e.preventDefault();
+  save = async () =>{
+    const {fields} = this.state;
+    const id = fields.id;    
 
     if(this.handleValidation()){
 
@@ -98,8 +119,15 @@ class EmpleadoEdit extends Component {
           'Content-Type': 'application/json'
         },
         data: JSON.stringify(fields)
-      });
-      this.setState({formState: 'saved'});
+      }).then(result => {
+        this.setState({ isLoading: false, formState: 'success' });
+      }).catch(error =>
+        this.setState({
+          error,
+          formState: "error",
+          isLoading: false
+        })
+      );
     }
   }
 
@@ -110,12 +138,23 @@ class EmpleadoEdit extends Component {
   };
 
   render = () => {
-    const {fields, formState, errors, cargos, firstCargo} = this.state;
+    const {fields, formState, errors, error, cargos, tipoDocumentos, firstCargo, firstTipoDocumento} = this.state;
+
+    let messageError;
+    if (formState === 'error') {
+      messageError = <Alert color="danger">{error.response.data.message}</Alert>;
+    }
 
     let optionCargos = cargos.map((cargo) =>
       <option key={cargo.id}
         value={cargo.id}
         default={(fields.id)?fields.cargo:firstCargo} >{cargo.nombre}</option>
+    );
+
+    let optionTipoDocumentos = tipoDocumentos.map((tipoDocumento) =>     
+      <option key={tipoDocumento.id}
+        value={tipoDocumento.id}
+        default={(fields.id)?fields.tipoDocumento:firstTipoDocumento} >{tipoDocumento.nombre}</option>
     );
 
     let ubicacion;
@@ -158,190 +197,256 @@ class EmpleadoEdit extends Component {
       messageDireccion = <Alert color="danger">{this.state.errors.direccion}</Alert>;
     }
 
-    return(
-    <div>
-      <AppNavbar/>
-      <Container className="App">
-        {title}
-        <Form className="form" onSubmit= {this.contactSubmit.bind(this)} >
-          <Col>
-          <Row form>
-            <Col sm="2">
-              <FormGroup>
-                <Label for="cargo">Cargo</Label>
-                <Input ref="cargo"
-                  type="select"                  
-                  value={this.state.fields.cargo}
-                  onChange={e => {
-                    this.handleChange(e.target.value, "cargo");
-                  }}
-                  >
-                  {optionCargos }
-                </Input>
-              </FormGroup>
-            </Col>
+    let messageNumeroDocumento;
+    if(errors.numeroDocumento){
+      messageNumeroDocumento = <Alert color="danger">{this.state.errors.numeroDocumento}</Alert>;
+    }
+
+    return (
+      <div>
+        <AppNavbar />
+        <Container className="App">
+          {title}
+          <Form className="form">
             <Col>
-              <FormGroup>
-                <Label for="nombres">Nombres</Label>
-                <Input ref="nombres"
-                  type="text"
-                  size="30"
-                  placeholder="Nombres del empleado"                  
-                  value={this.state.fields.nombres}
-                  onChange={e => {
-                    this.handleChange(e.target.value, "nombres");
-                  }}
-                  />
-                  {messageNombres }
-             </FormGroup>
-          </Col>
-          <Col>
-            <FormGroup>
-              <Label for="apellidos">Apellidos</Label>
-              <Input ref="apellidos"
-                type="text"
-                size="30"
-                placeholder="Apellidos del empleado"                
-                value={this.state.fields.apellidos}
-                onChange={e => {
-                  this.handleChange(e.target.value, "apellidos");
-                }}
-                />
-              {messageApellidos }
-            </FormGroup>
-          </Col>
-        </Row>
-      </Col>
-      <Col>
-      <Row form>
-          <Col sm="2">
-            <FormGroup>
-              <Label for="salario">Salario</Label>
-              <Input ref="salario"
-                pattern="[0-9]*"
-                title="Porfavor ingrese un numero valido"
-                type="text"
-                size="8"
-                placeholder="Salario del empleado"
-                value={this.state.fields.salario}
-                onChange={e => {
-                  this.handleChange(e.target.value, "salario");
-                }}                
-                />
-              {messageSalario }
-            </FormGroup>
-          </Col>
-          <Col>
-            <FormGroup>
-              <Label for="direccion">Direccion</Label>
-              <Input ref="direccion"
-                type="text"
-                size="70"
-                placeholder="Direccion del empleado"
-                value={this.state.fields.direccion}
-                onChange={e => {
-                  this.handleChange(e.target.value, "direccion");
-                }}
-                />
-              {messageDireccion }
-            </FormGroup>
-          </Col>
-          <Col>
-            <FormGroup>
-              <Label for="numeroCelular">Numero Celular</Label>
-              <Input ref="numeroCelular"
-                pattern="[0-9]*"
-                title="Porfavor ingrese un numero valido"
-                type="text"
-                size="13"
-                placeholder="Celular"
-                value={this.state.fields.numeroCelular}
-                onChange={e => {
-                  this.handleChange(e.target.value, "numeroCelular");
-                }}
-                />
-              {messageCelular }
-            </FormGroup>
-          </Col>
-        </Row>
-            </Col>
-
-          <Col sm="2">
-            <FormGroup>
-              <Label for="telefono">Telefono</Label>
-              <Input ref="telefono"
-                type="text"
-                size="13"
-                placeholder="Telefono"
-                value={this.state.fields.telefono}
-                onChange={e => {
-                  this.handleChange(e.target.value, "telefono");
-                }}                
-                />
-            </FormGroup>
-          </Col>
-
-          <Col>
-            <Container className="App">
-              <h5>Contacto de Emergencia</h5>
               <Row form>
-                <Col>
+              <Col sm="2">
                   <FormGroup>
-                    <Label for="contactoEmergenciaNombres">Nombres</Label>
-                    <Input ref="contactoEmergenciaNombres"
-                      type="text"
-                      size="30"
-                      placeholder="Nombres"
-                      value={this.state.fields.contactoEmergenciaNombres}
-                      onChange={e => {
-                        this.handleChange(e.target.value, "contactoEmergenciaNombres");
+                    <Label for="cargo">Cargo</Label>
+                    <Input
+                      ref="cargo"
+                      type="select"
+                      value={this.state.fields.cargo}
+                      onChange={(e) => {
+                        this.handleChange(e.target.value, "cargo");
                       }}
-                      />
+                    >
+                      {optionCargos}
+                    </Input>
                   </FormGroup>
                 </Col>
                 <Col>
                   <FormGroup>
-                    <Label for="contactoEmergenciaApellidos">Apellidos</Label>
-                    <Input ref="contactoEmergenciaApellidos"
-                      type="text"
-                      size="30"
-                      placeholder="Apellidos"                      
-                      value={this.state.fields.contactoEmergenciaApellidos}
-                      onChange={e => {
-                        this.handleChange(e.target.value, "contactoEmergenciaApellidos");
-                      }}                      
-                      />
+                    <Label for="tipoDocumento">Tipo Documento</Label>
+                    <Input
+                      ref="tipoDocumento"
+                      type="select"
+                      value={this.state.fields.tipoDocumento}
+                      onChange={(e) => {
+                        this.handleChange(e.target.value, "tipoDocumento");
+                      }}
+                    >
+                      {optionTipoDocumentos}
+                    </Input>
                   </FormGroup>
                 </Col>
-                <Col sm="3">
+                <Col>
                   <FormGroup>
-                    <Label for="contactoEmergenciaTelefono">Telefono</Label>
-                    <Input ref="contactoEmergenciaTelefono"
+                    <Label for="numeroDocumento">Numero Documento</Label>
+                    <Input
+                      ref="numeroDocumento"
                       type="text"
-                      size="13"
-                      placeholder="Numero celular o telefonico"                      
-                      value={this.state.fields.contactoEmergenciaTelefono}
-                      onChange={e => {
-                        this.handleChange(e.target.value, "contactoEmergenciaTelefono");
-                      }} 
-                      />
+                      size="15"
+                      placeholder="Numero de documento"
+                      value={this.state.fields.numeroDocumento}
+                      onChange={(e) => {
+                        this.handleChange(e.target.value, "numeroDocumento");
+                      }}
+                    />
+                    {messageNumeroDocumento}
                   </FormGroup>
                 </Col>
               </Row>
-            </Container>
-          </Col>
-            {ubicacion }
-          <Col>
-           {messageLabel }
-          </Col>
-          <FormGroup>
-            <Button color="primary" id="submit" type="submit">Guardar</Button>{' '}
-            <Button color="secondary" tag={Link} to="/empleados">Regresar</Button>{' '}
-            <Button color="secondary" onClick={this.resetForm}>Nuevo</Button>
-          </FormGroup>
-        </Form>
-      </Container>
-    </div>
+            </Col>
+            <Col>
+              <Row form>                
+                <Col>
+                  <FormGroup>
+                    <Label for="nombres">Nombres</Label>
+                    <Input
+                      ref="nombres"
+                      type="text"
+                      size="30"
+                      placeholder="Nombres del empleado"
+                      value={this.state.fields.nombres}
+                      onChange={(e) => {
+                        this.handleChange(e.target.value, "nombres");
+                      }}
+                    />
+                    {messageNombres}
+                  </FormGroup>
+                </Col>
+                <Col>
+                  <FormGroup>
+                    <Label for="apellidos">Apellidos</Label>
+                    <Input
+                      ref="apellidos"
+                      type="text"
+                      size="30"
+                      placeholder="Apellidos del empleado"
+                      value={this.state.fields.apellidos}
+                      onChange={(e) => {
+                        this.handleChange(e.target.value, "apellidos");
+                      }}
+                    />
+                    {messageApellidos}
+                  </FormGroup>
+                </Col>
+              </Row>
+            </Col>
+            <Col>
+              <Row form>
+                <Col sm="2">
+                  <FormGroup>
+                    <Label for="salario">Salario</Label>
+                    <Input
+                      ref="salario"
+                      pattern="[0-9]*"
+                      title="Porfavor ingrese un numero valido"
+                      type="text"
+                      size="8"
+                      placeholder="Salario del empleado"
+                      value={this.state.fields.salario}
+                      onChange={(e) => {
+                        this.handleChange(e.target.value, "salario");
+                      }}
+                    />
+                    {messageSalario}
+                  </FormGroup>
+                </Col>
+                <Col>
+                  <FormGroup>
+                    <Label for="direccion">Direccion</Label>
+                    <Input
+                      ref="direccion"
+                      type="text"
+                      size="70"
+                      placeholder="Direccion del empleado"
+                      value={this.state.fields.direccion}
+                      onChange={(e) => {
+                        this.handleChange(e.target.value, "direccion");
+                      }}
+                    />
+                    {messageDireccion}
+                  </FormGroup>
+                </Col>
+                <Col>
+                  <FormGroup>
+                    <Label for="numeroCelular">Numero Celular</Label>
+                    <Input
+                      ref="numeroCelular"
+                      pattern="[0-9]*"
+                      title="Porfavor ingrese un numero valido"
+                      type="text"
+                      size="13"
+                      placeholder="Celular"
+                      value={this.state.fields.numeroCelular}
+                      onChange={(e) => {
+                        this.handleChange(e.target.value, "numeroCelular");
+                      }}
+                    />
+                    {messageCelular}
+                  </FormGroup>
+                </Col>
+              </Row>
+            </Col>
+
+            <Col sm="2">
+              <FormGroup>
+                <Label for="telefono">Telefono</Label>
+                <Input
+                  ref="telefono"
+                  type="text"
+                  size="13"
+                  placeholder="Telefono"
+                  value={this.state.fields.telefono}
+                  onChange={(e) => {
+                    this.handleChange(e.target.value, "telefono");
+                  }}
+                />
+              </FormGroup>
+            </Col>
+
+            <Col>
+              <Container className="App">
+                <h5>Contacto de Emergencia</h5>
+                <Row form>
+                  <Col>
+                    <FormGroup>
+                      <Label for="contactoEmergenciaNombres">Nombres</Label>
+                      <Input
+                        ref="contactoEmergenciaNombres"
+                        type="text"
+                        size="30"
+                        placeholder="Nombres"
+                        value={this.state.fields.contactoEmergenciaNombres}
+                        onChange={(e) => {
+                          this.handleChange(
+                            e.target.value,
+                            "contactoEmergenciaNombres"
+                          );
+                        }}
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col>
+                    <FormGroup>
+                      <Label for="contactoEmergenciaApellidos">Apellidos</Label>
+                      <Input
+                        ref="contactoEmergenciaApellidos"
+                        type="text"
+                        size="30"
+                        placeholder="Apellidos"
+                        value={this.state.fields.contactoEmergenciaApellidos}
+                        onChange={(e) => {
+                          this.handleChange(
+                            e.target.value,
+                            "contactoEmergenciaApellidos"
+                          );
+                        }}
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col sm="3">
+                    <FormGroup>
+                      <Label for="contactoEmergenciaTelefono">Telefono</Label>
+                      <Input
+                        ref="contactoEmergenciaTelefono"
+                        type="text"
+                        size="13"
+                        placeholder="Numero celular o telefonico"
+                        value={this.state.fields.contactoEmergenciaTelefono}
+                        onChange={(e) => {
+                          this.handleChange(
+                            e.target.value,
+                            "contactoEmergenciaTelefono"
+                          );
+                        }}
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
+              </Container>
+            </Col>
+            {ubicacion}
+            <Col>{messageLabel}</Col>
+            <FormGroup>
+              <Button color="primary" onClick={this.save}>
+                Guardar
+              </Button>{" "}
+              <Button color="secondary" tag={Link} to="/empleados">
+                Regresar
+              </Button>{" "}
+              <Button color="secondary" onClick={this.resetForm}>
+                Nuevo
+              </Button>
+            </FormGroup>
+            <Col>
+             {messageError }
+            </Col>
+          </Form>
+        </Container>
+      </div>
     );
   }
 }
