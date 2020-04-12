@@ -19,6 +19,10 @@ const EMPLEADOS_UBICACION_SERVICE = '/empleados/ubicacion/';
 const EMPLEADO_UBICACION = '/empleado/ubicacion/';
 const EMPLEADOS_TIPO_UBICACION_SEARCH = '/empleados/searchWithTipoUbicacion';
 
+//Tipo documentos
+const TIPO_DOCUMENTOS_SERVICE= '/tipoDocumentos';
+
+
 //Table options
 const OPTIONS_TABLE = {
   alwaysShowAllBtns: false,
@@ -88,6 +92,10 @@ class Constant {
 
   static get EMPLEADOS_TIPO_UBICACION_SEARCH(){
     return EMPLEADOS_TIPO_UBICACION_SEARCH;
+  }
+
+  static get TIPO_DOCUMENTOS_SERVICE(){
+    return TIPO_DOCUMENTOS_SERVICE;
   }
 
   //Table options
