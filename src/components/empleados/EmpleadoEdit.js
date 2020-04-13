@@ -34,25 +34,20 @@ class EmpleadoEdit extends Component {
   async componentDidMount() {
     if (this.props.match.params.id !== 'new') {
       axios.get(PATH_EMPLEADO_SERVICE+`/${this.props.match.params.id}`)
-        .then(result =>
-            this.setState({fields: result.data}))
-        .catch(error => this.setState({
-          error,
-          isLoading: false
-        }));
+      .then(result => this.setState({fields: result.data, formState: 'success', isLoading: false}))
+      .catch(error => this.setState({ error, formState: "error", isLoading: false}));    
     }
 
     axios.get(PATH_CARGOS_SERVICE)
-      .then(result => {
-        let {fields} = this.state;
-        fields.cargo = result.data[0].id;
+    .then(result => {
+      let {fields} = this.state;
+      fields.cargo = result.data[0].id;
         
-        let firstCargo = result.data[0].id;
-        this.setState({cargos: result.data, fields: fields, firstCargo: firstCargo});
-      }).catch(error => this.setState({
-        error
-      })
-    );
+      let firstCargo = result.data[0].id;
+      this.setState({cargos: result.data, fields: fields, firstCargo: firstCargo, formState: 'success', isLoading: false});
+    }).catch(error => this.setState({
+      error, formState: "error", isLoading: false
+    }));
 
     axios.get(PATH_TIPO_DOCUMENTOS_SERVICE)
       .then(result => {
@@ -60,10 +55,9 @@ class EmpleadoEdit extends Component {
         fields.tipoDocumento = result.data[0].id;
         
         let firstTipoDocumento = result.data[0].id;
-        this.setState({tipoDocumentos: result.data, fields: fields, firstTipoDocumento: firstTipoDocumento});
+        this.setState({tipoDocumentos: result.data, fields: fields, firstTipoDocumento: firstTipoDocumento, formState: 'success', isLoading: false});
       }).catch(error => this.setState({
-        error
-      })
+        error, formState: "error", isLoading: false})
     );
   }
 
@@ -118,16 +112,9 @@ class EmpleadoEdit extends Component {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        data: JSON.stringify(fields)
-      }).then(result => {
-        this.setState({ isLoading: false, formState: 'success' });
-      }).catch(error =>
-        this.setState({
-          error,
-          formState: "error",
-          isLoading: false
-        })
-      );
+        data: JSON.stringify(fields) })
+        .then(result => {this.setState({ isLoading: false, formState: 'saved', isLoading: false })})
+        .catch(error => this.setState({error, formState: "error", isLoading: false}));
     }
   }
 
@@ -138,43 +125,19 @@ class EmpleadoEdit extends Component {
   };
 
   render = () => {
-    const {fields, formState, errors, error, cargos, tipoDocumentos, firstCargo, firstTipoDocumento} = this.state;
+    const {fields, formState, errors, error, cargos, tipoDocumentos, firstCargo, firstTipoDocumento, isLoading} = this.state;
 
-    let messageError;
-    if (formState === 'error') {
-      messageError = <Alert color="danger">{error.response.data.message}</Alert>;
+    if (isLoading) {
+      return <p>Loading...</p>;
     }
 
-    let optionCargos = cargos.map((cargo) =>
-      <option key={cargo.id}
-        value={cargo.id}
-        default={(fields.id)?fields.cargo:firstCargo} >{cargo.nombre}</option>
-    );
-
-    let optionTipoDocumentos = tipoDocumentos.map((tipoDocumento) =>     
-      <option key={tipoDocumento.id}
-        value={tipoDocumento.id}
-        default={(fields.id)?fields.tipoDocumento:firstTipoDocumento} >{tipoDocumento.nombre}</option>
-    );
-
-    let ubicacion;
-    if(this.state.fields.ubicacion){
-      ubicacion =
-      <UbicacionDesc
-        ubicacion ={this.state.fields.ubicacion}
-        />;
-    }
-
-    const id = fields["id"];
-
-    const title = <h2>{id ? 'Modificar Empleado' : 'Agregar Empleado'}</h2>;
     let messageLabel;
-    let messageCelular;
-
     if(formState == 'invalid'){
       messageLabel = <Alert color="danger">El fomulario tiene errores</Alert>;
     }else if (formState == 'saved') {
       messageLabel = <Alert color="success">El empleado fue guardado satisfactoriamente</Alert>;
+    } else if (formState == 'error') {
+      messageLabel = <Alert color="danger">{error.response.data.message}</Alert>;
     }
 
     let messageNombres;
@@ -202,6 +165,29 @@ class EmpleadoEdit extends Component {
       messageNumeroDocumento = <Alert color="danger">{this.state.errors.numeroDocumento}</Alert>;
     }
 
+    let optionCargos = cargos.map((cargo) =>
+      <option key={cargo.id}
+        value={cargo.id}
+        default={(fields.id)?fields.cargo:firstCargo} >{cargo.nombre}</option>
+    );
+
+    let optionTipoDocumentos = tipoDocumentos.map((tipoDocumento) =>     
+      <option key={tipoDocumento.id}
+        value={tipoDocumento.id}
+        default={(fields.id)?fields.tipoDocumento:firstTipoDocumento} >{tipoDocumento.nombre}</option>
+    );
+
+    let ubicacion;
+    if(this.state.fields.ubicacion){
+      ubicacion =
+      <UbicacionDesc
+        ubicacion ={this.state.fields.ubicacion}
+        />;
+    }
+
+    const id = fields["id"];
+    const title = <h2>{id ? 'Modificar Empleado' : 'Agregar Empleado'}</h2>;  
+    
     return (
       <div>
         <AppNavbar />
@@ -345,7 +331,6 @@ class EmpleadoEdit extends Component {
                         this.handleChange(e.target.value, "numeroCelular");
                       }}
                     />
-                    {messageCelular}
                   </FormGroup>
                 </Col>
               </Row>
@@ -428,8 +413,7 @@ class EmpleadoEdit extends Component {
                 </Row>
               </Container>
             </Col>
-            {ubicacion}
-            <Col>{messageLabel}</Col>
+            {ubicacion}            
             <FormGroup>
               <Button color="primary" onClick={this.save}>
                 Guardar
@@ -442,7 +426,7 @@ class EmpleadoEdit extends Component {
               </Button>
             </FormGroup>
             <Col>
-             {messageError }
+             {messageLabel}
             </Col>
           </Form>
         </Container>

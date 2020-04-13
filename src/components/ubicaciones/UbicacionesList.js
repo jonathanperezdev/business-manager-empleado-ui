@@ -88,17 +88,19 @@ class UbicacionesList extends Component {
   }
 
   render() {
-    const { ubicaciones, isLoading, error, isExistData, deletedState } = this.state;
-
-    let messageError;
-    if (deletedState == 'error') {
-      messageError = <Alert color="danger">{error.response.data.message}</Alert>;
-    }else if(deletedState == 'success'){
-      messageError = <Alert color="success">La ubicacion se elimino satisfactoriamente</Alert>;
-    }
+    const { ubicaciones, error, isExistData, deletedState, formState, isLoading } = this.state;
 
     if (isLoading) {
       return <p>Loading...</p>;
+    }
+    
+    let messageLabel;
+    if (deletedState == 'error') {
+      messageLabel = <Alert color="danger">{error.response.data.message}</Alert>;
+    }else if(deletedState == 'success'){
+      messageLabel = <Alert color="success">La ubicacion se elimino satisfactoriamente</Alert>;
+    } else if (formState == "error") {
+      messageLabel = (<Alert color="danger">{error.response.data.message}</Alert>);
     }
 
     const columns = [{
@@ -163,7 +165,7 @@ class UbicacionesList extends Component {
             </FormGroup>
             </Col>
             <Col>
-             {messageError }
+             {messageLabel }
             </Col>
           </Form >
         </Container>

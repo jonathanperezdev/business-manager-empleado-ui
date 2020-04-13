@@ -88,17 +88,21 @@ class CargosList extends Component {
   }
 
   render() {
-    const { cargos, isLoading, error, isExistData, deletedState } = this.state;
-
-    let messageError;
-    if (deletedState == 'error') {
-      messageError = <Alert color="danger">{error.response.data.message}</Alert>;
-    }else if(deletedState == 'success'){
-      messageError = <Alert color="success">El cargo se elimino satisfactoriamente</Alert>;
-    }
+    const { cargos, error, isExistData, deletedState, formState, isLoading } = this.state;
 
     if (isLoading) {
       return <p>Loading...</p>;
+    }
+
+    let messageLabel;
+    if (deletedState == 'error') {
+      messageLabel = <Alert color="danger">{error.response.data.message}</Alert>;
+    }else if(deletedState == 'success'){
+      messageLabel = <Alert color="success">El cargo se elimino satisfactoriamente</Alert>;
+    } else if (formState == "error") {
+      messageLabel = (
+        <Alert color="danger">{error.response.data.message}</Alert>
+      );
     }
 
     const columns = [{
@@ -160,7 +164,7 @@ class CargosList extends Component {
             </FormGroup>
             </Col>
             <Col>
-             {messageError }
+             {messageLabel }
             </Col>
           </Form >
         </Container>
