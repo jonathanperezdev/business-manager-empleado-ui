@@ -34,25 +34,27 @@ class EmpleadoEdit extends Component {
   async componentDidMount() {
     if (this.props.match.params.id !== 'new') {
       axios.get(PATH_EMPLEADO_SERVICE+`/${this.props.match.params.id}`)
-        .then(result =>
-            this.setState({fields: result.data}))
-        .catch(error => this.setState({
-          error,
-          isLoading: false
-        }));
+      .then(result =>
+        this.setState({fields: result.data, formState: 'success'}))
+      .catch(error => this.setState({
+        error,
+        formState: "error",
+        isLoading: false
+      }));    
     }
 
     axios.get(PATH_CARGOS_SERVICE)
-      .then(result => {
+    .then(result => {
         let {fields} = this.state;
         fields.cargo = result.data[0].id;
         
         let firstCargo = result.data[0].id;
-        this.setState({cargos: result.data, fields: fields, firstCargo: firstCargo});
-      }).catch(error => this.setState({
-        error
-      })
-    );
+        this.setState({cargos: result.data, fields: fields, firstCargo: firstCargo, formState: 'success'});
+    }).catch(error => this.setState({
+      error,
+      formState: "error",
+      isLoading: false
+    }));
 
     axios.get(PATH_TIPO_DOCUMENTOS_SERVICE)
       .then(result => {
@@ -60,9 +62,11 @@ class EmpleadoEdit extends Component {
         fields.tipoDocumento = result.data[0].id;
         
         let firstTipoDocumento = result.data[0].id;
-        this.setState({tipoDocumentos: result.data, fields: fields, firstTipoDocumento: firstTipoDocumento});
+        this.setState({tipoDocumentos: result.data, fields: fields, firstTipoDocumento: firstTipoDocumento, formState: 'success'});
       }).catch(error => this.setState({
-        error
+        error,
+        formState: "error",
+        isLoading: false
       })
     );
   }
