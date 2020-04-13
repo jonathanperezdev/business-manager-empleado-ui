@@ -191,33 +191,21 @@ class EmpleadosList extends Component {
   };
 
   render() {
-    const {
-      empleados,
-      isLoading,
-      error,
-      isExistData,
-      formState,
-      fields,
-      tipoDocumentos,
-      firstTipoDocumento,
-    } = this.state;
+    const {empleados, error, isExistData, formState, fields, tipoDocumentos, firstTipoDocumento, isLoading} = this.state;
 
-    let messageError;
+    if (isLoading) {
+      return <p>Loading...</p>;
+    }
+
+    let messageLabel;
     if (formState == "error") {
-      messageError = (
-        <Alert color="danger">{error.response.data.message}</Alert>
-      );
+      messageLabel = (<Alert color="danger">{error.response.data.message}</Alert>);
     } else if (formState == "deleted") {
-      messageError = (
-        <Alert color="success">El empleado se elimino satisfactoriamente</Alert>
-      );
+      messageLabel = (<Alert color="success">El empleado se elimino satisfactoriamente</Alert>);
     } else if (formState == "errorSearch") {
-      messageError = (
-        <Alert color="danger">
-          Debe ingresar el tipo y numero de documento o nombres y apellidos para
-          poder buscar
-        </Alert>
-      );
+      messageLabel = (<Alert color="danger">Debe ingresar el tipo y numero de documento o nombres y apellidos para poder buscar</Alert>);
+    } else if (formState == 'error') {
+      messageLabel = <Alert color="danger">{error.response.data.message}</Alert>;
     }
 
     let optionTipoDocumentos = tipoDocumentos.map((tipoDocumento) => (
@@ -229,10 +217,6 @@ class EmpleadosList extends Component {
         {tipoDocumento.nombre}
       </option>
     ));
-
-    if (isLoading) {
-      return <p>Loading...</p>;
-    }
 
     const columns = [
       {
@@ -413,7 +397,7 @@ class EmpleadosList extends Component {
                 </Button>
               </FormGroup>
             </Col>
-            <Col>{messageError}</Col>
+            <Col>{messageLabel}</Col>
           </Form>
         </Container>
       </div>
