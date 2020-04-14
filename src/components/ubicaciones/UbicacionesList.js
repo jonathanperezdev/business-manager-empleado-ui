@@ -99,8 +99,6 @@ class UbicacionesList extends Component {
       messageLabel = <Alert color="danger">{error.response.data.message}</Alert>;
     }else if(deletedState == 'success'){
       messageLabel = <Alert color="success">La ubicacion se elimino satisfactoriamente</Alert>;
-    } else if (formState == "error") {
-      messageLabel = (<Alert color="danger">{error.response.data.message}</Alert>);
     }
 
     const columns = [{

@@ -99,10 +99,6 @@ class CargosList extends Component {
       messageLabel = <Alert color="danger">{error.response.data.message}</Alert>;
     }else if(deletedState == 'success'){
       messageLabel = <Alert color="success">El cargo se elimino satisfactoriamente</Alert>;
-    } else if (formState == "error") {
-      messageLabel = (
-        <Alert color="danger">{error.response.data.message}</Alert>
-      );
     }
 
     const columns = [{
