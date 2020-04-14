@@ -204,8 +204,6 @@ class EmpleadosList extends Component {
       messageLabel = (<Alert color="success">El empleado se elimino satisfactoriamente</Alert>);
     } else if (formState == "errorSearch") {
       messageLabel = (<Alert color="danger">Debe ingresar el tipo y numero de documento o nombres y apellidos para poder buscar</Alert>);
-    } else if (formState == 'error') {
-      messageLabel = <Alert color="danger">{error.response.data.message}</Alert>;
     }
 
     let optionTipoDocumentos = tipoDocumentos.map((tipoDocumento) => (

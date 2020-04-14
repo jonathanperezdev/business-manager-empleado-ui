@@ -132,13 +132,13 @@ class EmpleadoEdit extends Component {
     }
 
     let messageLabel;
-    if(formState == 'invalid'){
+    if (formState == 'error') {
+      messageLabel = <Alert color="danger">{error.response.data.message}</Alert>;
+    } else if(formState == 'invalid'){
       messageLabel = <Alert color="danger">El fomulario tiene errores</Alert>;
     }else if (formState == 'saved') {
       messageLabel = <Alert color="success">El empleado fue guardado satisfactoriamente</Alert>;
-    } else if (formState == 'error') {
-      messageLabel = <Alert color="danger">{error.response.data.message}</Alert>;
-    }
+    } 
 
     let messageNombres;
     if(errors.nombres){
