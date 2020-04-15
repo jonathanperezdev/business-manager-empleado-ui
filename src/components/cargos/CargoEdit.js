@@ -15,6 +15,7 @@ import "css/App.css";
 import Constant from "common/Constant";
 import axios from "axios";
 import { validateRequired } from "common/Validator";
+import Loading from 'common/Loading';
 
 const PATH_CARGO_SERVICE = Constant.EMPLEADO_API + Constant.CARGO_SERVICE;
 
@@ -49,7 +50,7 @@ class CargoEdit extends Component {
     fields.descripcion = "";
     fields.funciones = "";
 
-    this.setState({ fields: fields });
+    this.setState({ fields: fields, formState: 'new' });
   };
 
   handleValidation = () => {
@@ -66,6 +67,8 @@ class CargoEdit extends Component {
   };
 
   save = async () => {
+    this.setState({isLoading: true});
+
     const fields = this.state.fields;
     const id = fields["id"];
 
@@ -93,8 +96,8 @@ class CargoEdit extends Component {
     const { fields, formState, errors, error, isLoading} = this.state;
 
     if (isLoading) {
-      return <p>Loading...</p>;
-    }    
+      return  <Loading/> 
+    }   
 
     let messageLabel;
     if (formState == "error") {
@@ -169,8 +172,9 @@ class CargoEdit extends Component {
                 />
               </FormGroup>
             </Col>
-            <FormGroup>
-              <Button color="primary" onClick={this.save}>
+            <FormGroup
+            >
+              <Button disabled={formState=='saved'} color="primary" onClick={this.save}>
                 Guardar
               </Button>{" "}
               <Button color="secondary" tag={Link} to="/cargos">

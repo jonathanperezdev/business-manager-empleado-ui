@@ -19,6 +19,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import AppNavbar from "menu/AppNavbar";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import Constant from "common/Constant";
+import Loading from 'common/Loading';
 import axios from "axios";
 
 const PATH_EMPLEADO_SERVICE = Constant.EMPLEADO_API + Constant.EMPLEADO_SERVICE;
@@ -194,7 +195,7 @@ class EmpleadosList extends Component {
     const {empleados, error, isExistData, formState, fields, tipoDocumentos, firstTipoDocumento, isLoading} = this.state;
 
     if (isLoading) {
-      return <p>Loading...</p>;
+      return  <Loading/> 
     }
 
     let messageLabel;
@@ -223,7 +224,7 @@ class EmpleadosList extends Component {
         isKey: "true",
       },
       {
-        dataField: "tipoDocumento",
+        dataField: "tipoDocumentoModel.nombre",
         text: "Tipo Documento",
       },
       {

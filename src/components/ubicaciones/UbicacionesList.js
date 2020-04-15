@@ -6,6 +6,7 @@ import AppNavbar from 'menu/AppNavbar';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import Constant from 'common/Constant';
 import axios from 'axios';
+import Loading from 'common/Loading';
 const options = Constant.OPTIONS_TABLE;
 
 const PATH_UBICACIONES_SERVICE = Constant.EMPLEADO_API+Constant.UBICACIONES_SERVICE;
@@ -91,7 +92,7 @@ class UbicacionesList extends Component {
     const { ubicaciones, error, isExistData, deletedState, formState, isLoading } = this.state;
 
     if (isLoading) {
-      return <p>Loading...</p>;
+      return  <Loading/> 
     }
     
     let messageLabel;

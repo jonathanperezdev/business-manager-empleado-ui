@@ -16,6 +16,7 @@ import Constant from "common/Constant";
 import axios from "axios";
 import EmpleadoDesc from "common/EmpleadoDesc";
 import { validateRequired } from "common/Validator";
+import Loading from 'common/Loading';
 
 const PATH_UBICACION_SERVICE =
   Constant.EMPLEADO_API + Constant.UBICACION_SERVICE;
@@ -38,7 +39,7 @@ class UbicacionEdit extends Component {
     fields.tipo = "OBRA";
     fields.descripcion = "";
 
-    this.setState(fields);
+    this.setState({fields: fields, formState: 'new'});
   };
 
   async componentDidMount() {
@@ -74,6 +75,8 @@ class UbicacionEdit extends Component {
   }
 
   save = async () => {
+    this.setState({isLoading: true});
+
     const fields = this.state.fields;
     const id = fields.id;
 
@@ -86,7 +89,7 @@ class UbicacionEdit extends Component {
           "Content-Type": "application/json",
         },
         data: JSON.stringify(fields) })
-        .then(result => this.setState({ isLoading: false, formState: "saved" }))
+        .then(result => this.setState({ isLoading: false, formState: 'saved' }))
         .catch(error => this.setState({ error, formState: "error", isLoading: false}))
     }
   };
@@ -101,7 +104,7 @@ class UbicacionEdit extends Component {
     const { fields, formState, errors, error, isLoading} = this.state;
 
     if (isLoading) {
-      return <p>Loading...</p>;
+      return  <Loading/> 
     }
 
     let messageLabel;
@@ -224,7 +227,7 @@ class UbicacionEdit extends Component {
             {ingeniero}
             {oficial}
             <FormGroup>
-              <Button color="primary" onClick={this.save}>
+              <Button color="primary" disabled={formState=='saved'} onClick={this.save}>
                 Guardar
               </Button>{" "}
               <Button color="secondary" tag={Link} to="/ubicaciones">

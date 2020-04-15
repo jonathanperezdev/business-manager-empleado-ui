@@ -5,6 +5,7 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import AppNavbar from 'menu/AppNavbar';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import Constant from 'common/Constant';
+import Loading from 'common/Loading';
 import axios from 'axios';
 const options = Constant.OPTIONS_TABLE;
 
@@ -91,7 +92,7 @@ class CargosList extends Component {
     const { cargos, error, isExistData, deletedState, formState, isLoading } = this.state;
 
     if (isLoading) {
-      return <p>Loading...</p>;
+      return <Loading/>;
     }
 
     let messageLabel;

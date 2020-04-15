@@ -7,7 +7,7 @@ import Constant from 'common/Constant';
 import axios from 'axios';
 import {validateRequired} from 'common/Validator';
 import UbicacionDesc from 'common/UbicacionDesc';
-
+import Loading from 'common/Loading';
 
 const PATH_EMPLEADO_SERVICE = Constant.EMPLEADO_API+Constant.EMPLEADO_SERVICE;
 const PATH_CARGOS_SERVICE = Constant.EMPLEADO_API+Constant.CARGOS_SERVICE;
@@ -62,11 +62,11 @@ class EmpleadoEdit extends Component {
   }
 
   resetForm = () =>{
-    let {fields} = this.state;
-
-    fields.tipoDocumento = (fields.id) ? this.state.firstTipoDocumento : '';
+    let {fields, firstTipoDocumento, firstCargo} = this.state;
+    
+    fields.tipoDocumento = firstTipoDocumento;
     fields.numeroDocumento = '';
-    fields.cargo = (fields.id) ? this.state.firstCargo : '';
+    fields.cargo = firstCargo;
     fields.nombres = '';
     fields.apellidos = '';
     fields.salario = '';
@@ -77,7 +77,7 @@ class EmpleadoEdit extends Component {
     fields.contactoEmergenciaApellidos = '';
     fields.contactoEmergenciaTelefono = '';    
 
-    this.setState(fields);
+    this.setState({fields: fields, formState: 'new'});
   }
 
   handleValidation(){
@@ -100,6 +100,8 @@ class EmpleadoEdit extends Component {
   }
 
   save = async () =>{
+    this.setState({isLoading: true});
+
     const {fields} = this.state;
     const id = fields.id;    
 
@@ -128,7 +130,7 @@ class EmpleadoEdit extends Component {
     const {fields, formState, errors, error, cargos, tipoDocumentos, firstCargo, firstTipoDocumento, isLoading} = this.state;
 
     if (isLoading) {
-      return <p>Loading...</p>;
+      return  <Loading/> 
     }
 
     let messageLabel;
@@ -231,7 +233,7 @@ class EmpleadoEdit extends Component {
                     <Label for="numeroDocumento">Numero Documento</Label>
                     <Input
                       ref="numeroDocumento"
-                      type="text"
+                      type="number"
                       size="15"
                       placeholder="Numero de documento"
                       value={this.state.fields.numeroDocumento}
@@ -286,10 +288,8 @@ class EmpleadoEdit extends Component {
                   <FormGroup>
                     <Label for="salario">Salario</Label>
                     <Input
-                      ref="salario"
-                      pattern="[0-9]*"
-                      title="Porfavor ingrese un numero valido"
-                      type="text"
+                      ref="salario"                      
+                      type="number"
                       size="8"
                       placeholder="Salario del empleado"
                       value={this.state.fields.salario}
@@ -320,10 +320,8 @@ class EmpleadoEdit extends Component {
                   <FormGroup>
                     <Label for="numeroCelular">Numero Celular</Label>
                     <Input
-                      ref="numeroCelular"
-                      pattern="[0-9]*"
-                      title="Porfavor ingrese un numero valido"
-                      type="text"
+                      ref="numeroCelular"                      
+                      type="number"
                       size="13"
                       placeholder="Celular"
                       value={this.state.fields.numeroCelular}
@@ -341,7 +339,7 @@ class EmpleadoEdit extends Component {
                 <Label for="telefono">Telefono</Label>
                 <Input
                   ref="telefono"
-                  type="text"
+                  type="number"
                   size="13"
                   placeholder="Telefono"
                   value={this.state.fields.telefono}
@@ -397,7 +395,7 @@ class EmpleadoEdit extends Component {
                       <Label for="contactoEmergenciaTelefono">Telefono</Label>
                       <Input
                         ref="contactoEmergenciaTelefono"
-                        type="text"
+                        type="number"
                         size="13"
                         placeholder="Numero celular o telefonico"
                         value={this.state.fields.contactoEmergenciaTelefono}
@@ -415,7 +413,7 @@ class EmpleadoEdit extends Component {
             </Col>
             {ubicacion}            
             <FormGroup>
-              <Button color="primary" onClick={this.save}>
+              <Button disabled={formState=='saved'} color="primary" onClick={this.save}>
                 Guardar
               </Button>{" "}
               <Button color="secondary" tag={Link} to="/empleados">
