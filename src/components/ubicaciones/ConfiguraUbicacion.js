@@ -18,6 +18,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import AppNavbar from "menu/AppNavbar";
 import Constant from "common/Constant";
+import Loading from 'common/Loading';
 import axios from "axios";
 const options = Constant.OPTIONS_TABLE;
 
@@ -181,7 +182,9 @@ class ConfiguraUbicacion extends Component {
     this.setState(fields);
   }
 
-  save = async () => {  
+  save = async () => {
+    this.setState({isLoading: true});
+
     let { fields, ubicaciones } = this.state;
 
     let ubicacionSelected = ubicaciones.find((x) => x.id == fields.idUbicacion);
@@ -198,12 +201,14 @@ class ConfiguraUbicacion extends Component {
         "Content-Type": "application/json",
       },
       data: JSON.stringify(fields) })
-      .then(() => {this.setState({formState: "saved", modalSave: false});})
-      .catch(error => this.setState({error, isLoading: false, formState: "error", modalSave: false}));
+      .then(() => {this.setState({formState: "saved", modalSave: false, isLoading: false});})
+      .catch(error => this.setState({error, isLoading: false, formState: "error", modalSave: false, isLoading: false}));
   }
 
   quitarEmpleados = async () => {
-    let { selected, request} = this.state;
+    this.setState({isLoading: true});
+
+    let { selected, request} = this.state;   
 
     request.idEmpleados = selected;
     request.idUbicacion = '';
@@ -224,21 +229,33 @@ class ConfiguraUbicacion extends Component {
             }).length == 0
           );
         });
+
         let isExistData = true;
-    
         if (updatedEmpleados.length == 0) {
-          isExistData = false;
+          isExistData = false;          
         }
 
-        this.setState({empleados: updatedEmpleados, formState: "saved", isExistData: isExistData, modalSave: false});
+        this.setState({empleados: updatedEmpleados, formState: 'saved', isExistData: isExistData, modalEmpleados: false, isLoading: false});
       })
-      .catch(error => this.setState({error, isLoading: false, formState: "error", modalSave: false}));
+      .catch(error => this.setState({error, isLoading: false, formState: "error", modalEmpleados: false, isLoading: false}));
   }
 
   toggleSave = () => {
     this.setState({
       modalSave: !this.state.modalSave,
     });
+  }
+
+  toggleEmpleados = () => {
+    let {selected} = this.state;
+
+    if(selected.length == 0){
+      this.setState({formState: 'noEmpleadosToQuit'})
+    }else {
+      this.setState({
+        modalEmpleados: !this.state.modalEmpleados,
+      });
+    }    
   }
 
   agregarEmpleados = () => {
@@ -264,7 +281,7 @@ class ConfiguraUbicacion extends Component {
     } = this.state;
 
     if (isLoading) {
-      return <p>Loading...</p>;
+      return  <Loading/> 
     }
 
     let messageLabel;
@@ -272,7 +289,9 @@ class ConfiguraUbicacion extends Component {
       messageLabel = (<Alert color="danger">{error.response.data.message}</Alert>);
     } else if (formState == "saved") {
       messageLabel = (<Alert color="success">La ubicacion se guardo satisfactoriamente</Alert>);
-    } 
+    } else if (formState == "noEmpleadosToQuit") {
+      messageLabel = (<Alert color="success">Debe seleccionar por lo menos un empleado</Alert>);
+    }
 
     let optionUbicacion = ubicaciones.map((ubicacion) => (
       <option
@@ -363,6 +382,14 @@ class ConfiguraUbicacion extends Component {
         isKey: "true",
       },
       {
+        dataField: 'tipoDocumentoModel.nombre',
+        text: "Tipo",
+      },
+      {
+        dataField: 'numeroDocumento',
+        text: "Numero",
+      },
+      {
         dataField: "nombres",
         text: "Nombres",
       },
@@ -386,7 +413,7 @@ class ConfiguraUbicacion extends Component {
         <div>
           <Col>
             <Container className="App">
-              <h5>Eliminar Empleado de Ubicacion</h5>
+              <h5>Empleados</h5>
               <FormGroup>
                 <BootstrapTable
                   keyField="id"
@@ -427,9 +454,33 @@ class ConfiguraUbicacion extends Component {
       </Modal>
     );
 
+    const modalQuitarEmpleados = (
+      <Modal
+        isOpen={this.state.modalEmpleados}
+        toggle={this.toggleEmpleados}
+        className={this.props.className}
+      >
+        <ModalHeader toggle={this.toggleEmpleados}>
+          Quitar Empleados
+        </ModalHeader>
+        <ModalBody>
+          Esta seguro de quitar de la ubicacion {ubicacion.nombre} {selected.length} empleados
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={this.quitarEmpleados}>
+            Quitar Empleados
+          </Button>{" "}
+          <Button color="secondary" onClick={this.toggleEmpleados}>
+            Cancelar
+          </Button>
+        </ModalFooter>
+      </Modal>
+    );
+
     return (
       <div>
         {modalSave}
+        {modalQuitarEmpleados}
         <AppNavbar />
         <Container className="App">
           <h2>Configuracion Ubicacion</h2>
@@ -461,7 +512,7 @@ class ConfiguraUbicacion extends Component {
                   Agregar Empleados
                 </Button>
                 {"    "}
-                <Button color="primary" onClick={this.quitarEmpleados}>
+                <Button color="primary" onClick={this.toggleEmpleados}>
                   Quitar Empleados
                 </Button>
               </FormGroup>

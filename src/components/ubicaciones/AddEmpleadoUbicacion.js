@@ -20,6 +20,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import AppNavbar from "menu/AppNavbar";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import Constant from "common/Constant";
+import Loading from 'common/Loading';
 import axios from "axios";
 
 const PATH_EMPLEADOS_SEARCH_SERVICE =
@@ -218,7 +219,7 @@ class AddEmpleadoUbicacion extends Component {
     const {empleados, isLoading, error, isExistData, formState, ubicacion, fields, tipoDocumentos, firstTipoDocumento} = this.state;
 
     if (isLoading) {
-      return <p>Loading...</p>;
+      return  <Loading/> 
     }
     
     let messageLabel;
@@ -245,6 +246,14 @@ class AddEmpleadoUbicacion extends Component {
         dataField: "id",
         text: "Codigo",
         isKey: "true",
+      },
+      {
+        dataField: 'tipoDocumentoModel.nombre',
+        text: "Tipo",
+      },
+      {
+        dataField: 'numeroDocumento',
+        text: "Numero",
       },
       {
         dataField: "nombres",
@@ -295,7 +304,7 @@ class AddEmpleadoUbicacion extends Component {
           Confirmar Agregar Empleados
         </ModalHeader>
         <ModalBody>
-          Esta seguro de agregar empleados a la ubicacion {ubicacion.nombre}
+          Esta seguro de agregar empleados a {ubicacion.nombre}
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={this.addEmpleadoUbicacion}>
