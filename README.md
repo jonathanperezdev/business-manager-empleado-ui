@@ -24,3 +24,6 @@ yarn start
 
 #Release 1
 Microservice created to manage employees UI 
+
+#Release 2
+Added docker to empleado UI and a initial menu to select between applications
