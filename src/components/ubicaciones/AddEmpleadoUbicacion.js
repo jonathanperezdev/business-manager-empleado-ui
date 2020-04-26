@@ -3,18 +3,12 @@ import { withRouter } from "react-router-dom";
 import {
   Container,
   Col,
-  Form,
-  FormGroup,
+  Form,  
   Button,
   Alert,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Label,
-  Row,
-  Input,
-} from "reactstrap";
+  Modal,  
+  Row  
+} from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import AppNavbar from "menu/AppNavbar";
@@ -24,17 +18,17 @@ import Loading from 'common/Loading';
 import axios from "axios";
 
 const PATH_EMPLEADOS_SEARCH_SERVICE =
-  Constant.EMPLEADO_API + Constant.EMPLEADOS_TIPO_UBICACION_SEARCH;
+  Constant.EMPLEADO_API + '/empleados/searchWithTipoUbicacion';
 const PATH_UBICACION_SERVICE =
-  Constant.EMPLEADO_API + Constant.UBICACION_SERVICE;
+  Constant.EMPLEADO_API + '/ubicacion';
 const PATH_EMPLEADO_UBICACION_SERVICE =
-  Constant.EMPLEADO_API + Constant.EMPLEADOS_UBICACION_SERVICE;
-const options = Constant.OPTIONS_TABLE;
+  Constant.EMPLEADO_API + '/empleados/ubicacion/';
 const PATH_TIPO_DOCUMENTOS_SERVICE =
-  Constant.EMPLEADO_API + Constant.TIPO_DOCUMENTOS_SERVICE;
+  Constant.EMPLEADO_API + '/tipoDocumentos';
+
+const options = Constant.OPTIONS_TABLE;
 
 let rowId = "";
-
 class AddEmpleadoUbicacion extends Component {
   emptyState = {
     tipoDocumento: '',
@@ -224,11 +218,11 @@ class AddEmpleadoUbicacion extends Component {
     
     let messageLabel;
     if (formState == "error") {
-      messageLabel = (<Alert color="danger">{error.response.data.message}</Alert>);
+      messageLabel = (<Alert variant="danger">{error.response.data.message}</Alert>);
     } else if (formState == "errorSearch") {
-      messageLabel = (<Alert color="danger">Debe ingresar el id, nombres o apellidos para poder buscar</Alert>);
+      messageLabel = (<Alert variant="danger">Debe ingresar el id, nombres o apellidos para poder buscar</Alert>);
     } else if (formState == "selectedEmpty") {
-      messageLabel = (<Alert color="danger">Debe seleccionar minimo un empleado</Alert>);
+      messageLabel = (<Alert variant="danger">Debe seleccionar minimo un empleado</Alert>);
     }
 
     let optionTipoDocumentos = tipoDocumentos.map((tipoDocumento) => (
@@ -278,7 +272,7 @@ class AddEmpleadoUbicacion extends Component {
       tableEmpleado = (
         <div>
           <Col>
-            <FormGroup>
+            <Form.Group  controlId='confUbicacion.'>
               <BootstrapTable
                 keyField="id"
                 data={empleados}
@@ -286,7 +280,7 @@ class AddEmpleadoUbicacion extends Component {
                 selectRow={selectRow}
                 pagination={paginationFactory(options)}
               />
-            </FormGroup>
+            </Form.Group>
           </Col>
         </div>
       );
@@ -296,24 +290,23 @@ class AddEmpleadoUbicacion extends Component {
 
     const modal = (
       <Modal
-        isOpen={this.state.modal}
+        show={this.state.modal}
         toggle={this.toggle}
-        className={this.props.className}
-      >
-        <ModalHeader toggle={this.toggle}>
+        className={this.props.className}>
+        <Modal.Header toggle={this.toggle}>
           Confirmar Agregar Empleados
-        </ModalHeader>
-        <ModalBody>
+        </Modal.Header>
+        <Modal.Body>
           Esta seguro de agregar empleados a {ubicacion.nombre}
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={this.addEmpleadoUbicacion}>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="outline-primary" onClick={this.addEmpleadoUbicacion}>
             Agregar
           </Button>{" "}
-          <Button color="secondary" onClick={this.toggle}>
+          <Button variant="outline-secondary" onClick={this.toggle}>
             Cancelar
           </Button>
-        </ModalFooter>
+        </Modal.Footer>
       </Modal>
     );
 
@@ -327,25 +320,23 @@ class AddEmpleadoUbicacion extends Component {
             <Col>
               <Row form>
               <Col>
-                  <FormGroup>
-                    <Label for="tipoDocumento">Tipo Documento</Label>
-                    <Input
-                      ref="tipoDocumento"
-                      type="select"
+                  <Form.Group  controlId='confUbicacion.tipoDocumento'>
+                    <Form.Label>Tipo Documento</Form.Label>
+                    <Form.Control
+                      as="select"
                       value={this.state.fields.tipoDocumento}
                       onChange={(e) => {
                         this.handleChange(e.target.value, "tipoDocumento");
                       }}
                     >
                       {optionTipoDocumentos}
-                    </Input>
-                  </FormGroup>
+                    </Form.Control>
+                  </Form.Group>
                 </Col>
                 <Col>
-                  <FormGroup>
-                    <Label for="numeroDocumento">Numero Documento</Label>
-                    <Input
-                      ref="numeroDocumento"
+                  <Form.Group  controlId='confUbicacion.numeroDocumento'>
+                    <Form.Label>Numero Documento</Form.Label>
+                    <Form.Control                      
                       type="text"
                       size="15"
                       placeholder="Numero de documento"
@@ -354,13 +345,12 @@ class AddEmpleadoUbicacion extends Component {
                         this.handleChange(e.target.value, "numeroDocumento");
                       }}
                     />
-                  </FormGroup>
+                  </Form.Group>
                 </Col>
                 <Col>
-                  <FormGroup>
-                    <Label for="nombres">Nombre</Label>
-                    <Input
-                      ref="nombres"
+                  <Form.Group  controlId='confUbicacion.nombres'>
+                    <Form.Label>Nombre</Form.Label>
+                    <Form.Control
                       type="text"
                       size="30"
                       placeholder="Nombres del empleado"
@@ -369,12 +359,12 @@ class AddEmpleadoUbicacion extends Component {
                         this.handleChange(e.target.value, "nombres");
                       }}
                     />
-                  </FormGroup>
+                  </Form.Group>
                 </Col>
                 <Col>
-                  <FormGroup>
-                    <Label for="apellidos">Apellidos</Label>
-                    <Input
+                  <Form.Group  controlId='confUbicacion.apellidos'>
+                    <Form.Label>Apellidos</Form.Label>
+                    <Form.Control
                       ref="apellidos"
                       type="text"
                       size="30"
@@ -384,29 +374,29 @@ class AddEmpleadoUbicacion extends Component {
                         this.handleChange(e.target.value, "apellidos");
                       }}
                     />
-                  </FormGroup>
+                  </Form.Group>
                 </Col>
               </Row>
             </Col>
             {tableEmpleado}
             <Col>
-              <FormGroup>
-                <Button color="primary" onClick={this.searchSubmit}>
+              <Form.Group  controlId='confUbicacion.'>
+                <Button variant="outline-primary" onClick={this.searchSubmit}>
                   Consultar
                 </Button>
                 {"    "}
                 <Button
-                  color="primary"
+                  variant="outline-primary"
                   disabled={!this.state.isExistData}
                   onClick={this.openModal}
                 >
                   Agregar Empleados
                 </Button>
                 {"    "}
-                <Button color="primary" onClick={this.cancelar}>
+                <Button variant="outline-primary" onClick={this.cancelar}>
                   Cancelar
                 </Button>
-              </FormGroup>
+              </Form.Group>
             </Col>
             <Col>{messageLabel}</Col>
           </Form>

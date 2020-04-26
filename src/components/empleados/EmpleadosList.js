@@ -2,18 +2,12 @@ import React, { Component } from "react";
 import {
   Container,
   Col,
-  Form,
-  FormGroup,
+  Form,  
   Button,
   Alert,
   Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Label,
-  Row,
-  Input,
-} from "reactstrap";
+  Row  
+} from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import AppNavbar from "menu/AppNavbar";
@@ -22,13 +16,12 @@ import Constant from "common/Constant";
 import Loading from 'common/Loading';
 import axios from "axios";
 
-const PATH_EMPLEADO_SERVICE = Constant.EMPLEADO_API + Constant.EMPLEADO_SERVICE;
+const PATH_EMPLEADO_SERVICE = Constant.EMPLEADO_API+'/empleado';
+const PATH_TIPO_DOCUMENTOS_SERVICE = Constant.EMPLEADO_API+'/tipoDocumentos';
 const PATH_EMPLEADOS_SEARCH_SERVICE =
-  Constant.EMPLEADO_API + Constant.EMPLEADOS_SEARCH_SERVICE;
-const options = Constant.OPTIONS_TABLE;
-const PATH_TIPO_DOCUMENTOS_SERVICE =
-  Constant.EMPLEADO_API + Constant.TIPO_DOCUMENTOS_SERVICE;
+  Constant.EMPLEADO_API + '/empleados/search';
 
+const options = Constant.OPTIONS_TABLE;
 let rowId = "";
 
 class EmpleadosList extends Component {
@@ -200,11 +193,11 @@ class EmpleadosList extends Component {
 
     let messageLabel;
     if (formState == "error") {
-      messageLabel = (<Alert color="danger">{error.response.data.message}</Alert>);
+      messageLabel = (<Alert variant="danger">{error.response.data.message}</Alert>);
     } else if (formState == "deleted") {
-      messageLabel = (<Alert color="success">El empleado se elimino satisfactoriamente</Alert>);
+      messageLabel = (<Alert variant="success">El empleado se elimino satisfactoriamente</Alert>);
     } else if (formState == "errorSearch") {
-      messageLabel = (<Alert color="danger">Debe ingresar el tipo y numero de documento o nombres y apellidos para poder buscar</Alert>);
+      messageLabel = (<Alert variant="danger">Debe ingresar el tipo y numero de documento o nombres y apellidos para poder buscar</Alert>);
     }
 
     let optionTipoDocumentos = tipoDocumentos.map((tipoDocumento) => (
@@ -255,7 +248,7 @@ class EmpleadosList extends Component {
       tableEmpleado = (
         <div>
           <Col>
-            <FormGroup>
+            <Form.Group>
               <BootstrapTable
                 keyField="id"
                 data={empleados}
@@ -263,7 +256,7 @@ class EmpleadosList extends Component {
                 selectRow={selectRow}
                 pagination={paginationFactory(options)}
               />
-            </FormGroup>
+            </Form.Group>
           </Col>
         </div>
       );
@@ -273,20 +266,20 @@ class EmpleadosList extends Component {
 
     const modal = (
       <Modal
-        isOpen={this.state.modal}
+        show={this.state.modal}
         toggle={this.toggle}
         className={this.props.className}
       >
-        <ModalHeader toggle={this.toggle}>Confirmar Eliminar</ModalHeader>
-        <ModalBody>Esta seguro de eliminar el empleado</ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={() => this.remove(rowId)}>
+        <Modal.Header toggle={this.toggle}>Confirmar Eliminar</Modal.Header>
+        <Modal.Body>Esta seguro de eliminar el empleado</Modal.Body>
+        <Modal.Footer>
+          <Button variant="outline-primary" onClick={() => this.remove(rowId)}>
             Eliminar
           </Button>{" "}
-          <Button color="secondary" onClick={this.toggle}>
+          <Button variant="outline-secondary" onClick={this.toggle}>
             Cancelar
           </Button>
-        </ModalFooter>
+        </Modal.Footer>
       </Modal>
     );
 
@@ -300,25 +293,23 @@ class EmpleadosList extends Component {
             <Col>
               <Row form>
                 <Col>
-                  <FormGroup>
-                    <Label for="tipoDocumento">Tipo Documento</Label>
-                    <Input
-                      ref="tipoDocumento"
-                      type="select"
+                  <Form.Group controlId="empleado.tipoDocumento">
+                    <Form.Label>Tipo</Form.Label>
+                    <Form.Control                      
+                      as="select"
                       value={this.state.fields.tipoDocumento}
                       onChange={(e) => {
                         this.handleChange(e.target.value, "tipoDocumento");
                       }}
                     >
                       {optionTipoDocumentos}
-                    </Input>
-                  </FormGroup>
+                    </Form.Control>
+                  </Form.Group>
                 </Col>
                 <Col>
-                  <FormGroup>
-                    <Label for="numeroDocumento">Numero Documento</Label>
-                    <Input
-                      ref="numeroDocumento"
+                  <Form.Group controlId="empleado.numeroDocumento">
+                    <Form.Label>Numero</Form.Label>
+                    <Form.Control                      
                       type="text"
                       size="15"
                       placeholder="Numero de documento"
@@ -327,13 +318,12 @@ class EmpleadosList extends Component {
                         this.handleChange(e.target.value, "numeroDocumento");
                       }}
                     />
-                  </FormGroup>
+                  </Form.Group>
                 </Col>
                 <Col>
-                  <FormGroup>
-                    <Label for="nombres">Nombre</Label>
-                    <Input
-                      ref="nombres"
+                  <Form.Group controlId="empleado.nombres">
+                    <Form.Label>Nombre</Form.Label>
+                    <Form.Control
                       type="text"
                       size="30"
                       placeholder="Nombres del empleado"
@@ -342,13 +332,12 @@ class EmpleadosList extends Component {
                         this.handleChange(e.target.value, "nombres");
                       }}
                     />
-                  </FormGroup>
+                  </Form.Group>
                 </Col>
                 <Col>
-                  <FormGroup>
-                    <Label for="apellidos">Apellidos</Label>
-                    <Input
-                      ref="apellidos"
+                  <Form.Group controlId="empleado.apellidos">
+                    <Form.Label>Apellidos</Form.Label>
+                    <Form.Control
                       type="text"
                       size="30"
                       placeholder="Apellidos del empleado"
@@ -357,26 +346,26 @@ class EmpleadosList extends Component {
                         this.handleChange(e.target.value, "apellidos");
                       }}
                     />
-                  </FormGroup>
+                  </Form.Group>
                 </Col>
               </Row>
             </Col>
             {tableEmpleado}
             <Col>
-              <FormGroup>
-                <Button color="primary" onClick={this.searchSubmit}>
+              <Form.Group>
+                <Button variant="outline-primary" onClick={this.searchSubmit}>
                   Consultar
                 </Button>
                 {"    "}
                 <Button
-                  color="primary"
+                  variant="outline-primary"
                   onClick={(path) => this.create("empleado/new")}
                 >
                   Crear
                 </Button>
                 {"    "}
                 <Button
-                  color="primary"
+                  variant="outline-primary"
                   disabled={!this.state.isExistData}
                   onClick={(id) => this.edit(rowId)}
                 >
@@ -384,17 +373,17 @@ class EmpleadosList extends Component {
                 </Button>
                 {"    "}
                 <Button
-                  color="primary"
+                  variant="outline-secondary"
                   disabled={!this.state.isExistData}
                   onClick={this.toggle}
                 >
                   Eliminar
                 </Button>
                 {"    "}
-                <Button color="primary" onClick={this.resetForm}>
+                <Button variant="outline-primary" onClick={this.resetForm}>
                   Nueva Busqueda
                 </Button>
-              </FormGroup>
+              </Form.Group>
             </Col>
             <Col>{messageLabel}</Col>
           </Form>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Col, Form, FormGroup, Button, Alert, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
+import { Container, Col, Form, Button, Alert, Modal} from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import AppNavbar from 'menu/AppNavbar';
@@ -9,8 +9,8 @@ import axios from 'axios';
 import Loading from 'common/Loading';
 const options = Constant.OPTIONS_TABLE;
 
-const PATH_UBICACIONES_SERVICE = Constant.EMPLEADO_API+Constant.UBICACIONES_SERVICE;
-const PATH_UBICACION_SERVICE = Constant.EMPLEADO_API+Constant.UBICACION_SERVICE;
+const PATH_UBICACIONES_SERVICE = Constant.EMPLEADO_API+'/ubicaciones';
+const PATH_UBICACION_SERVICE = Constant.EMPLEADO_API+'/ubicacion';
 
 let rowId = '';
 
@@ -23,7 +23,7 @@ class UbicacionesList extends Component {
       ubicaciones: [],
       isLoading: true,
       error: null,
-      isExistData: true,
+      isExistData: false,
       deletedState: '',
       modal: false
     };    
@@ -89,7 +89,7 @@ class UbicacionesList extends Component {
   }
 
   render() {
-    const { ubicaciones, error, isExistData, deletedState, formState, isLoading } = this.state;
+    const { ubicaciones, error, isExistData, deletedState, formState, isLoading } = this.state;    
 
     if (isLoading) {
       return  <Loading/> 
@@ -97,9 +97,9 @@ class UbicacionesList extends Component {
     
     let messageLabel;
     if (deletedState == 'error') {
-      messageLabel = <Alert color="danger">{error.response.data.message}</Alert>;
+      messageLabel = <Alert variant="danger">{error.response.data.message}</Alert>;
     }else if(deletedState == 'success'){
-      messageLabel = <Alert color="success">La ubicacion se elimino satisfactoriamente</Alert>;
+      messageLabel = <Alert variant="success">La ubicacion se elimino satisfactoriamente</Alert>;
     }
 
     const columns = [{
@@ -128,15 +128,15 @@ class UbicacionesList extends Component {
       onSelect: this.onRowSelect
     };
 
-    const modal = <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}>Confirmar Eliminar</ModalHeader>
-                      <ModalBody>
+    const modal = <Modal show={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                    <Modal.Header toggle={this.toggle}>Confirmar Eliminar</Modal.Header>
+                      <Modal.Body>
                         Esta seguro de eliminar la ubicacion
-                      </ModalBody>
-                      <ModalFooter>
-                        <Button color="primary" onClick={() => this.remove(rowId)}>Eliminar</Button>{' '}
-                        <Button color="secondary" onClick={this.toggle}>Cancelar</Button>
-                      </ModalFooter>
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button variant="outline-primary" onClick={() => this.remove(rowId)}>Eliminar</Button>{' '}
+                        <Button variant="outline-secondary" onClick={this.toggle}>Cancelar</Button>
+                      </Modal.Footer>
                     </Modal>;
 
     return (
@@ -147,21 +147,21 @@ class UbicacionesList extends Component {
           <h2>Ubicaciones</h2>
           <Form className="form">
             <Col>
-              <FormGroup>
+              <Form.Group>
                 <BootstrapTable
                   keyField='id'
                   data={ ubicaciones }
                   columns={ columns }
                   selectRow={ selectRow }
                   pagination={ paginationFactory(options)}/>
-              </FormGroup>
+              </Form.Group>
             </Col>
             <Col>
-            <FormGroup>
-              <Button color="primary" disabled={!this.state.isExistData} onClick={(id) => this.edit(rowId)} >Modificar</Button>{'    '}
-              <Button color="primary" disabled={!this.state.isExistData} onClick={this.toggle}>Eliminar</Button>{'    '}
-              <Button color="primary" onClick={(path) => this.create("ubicacion/new")}>Crear</Button>
-            </FormGroup>
+            <Form.Group>
+              <Button variant="outline-primary" disabled={!this.state.isExistData} onClick={(id) => this.edit(rowId)} >Modificar</Button>{'    '}
+              <Button variant="outline-secondary" disabled={!this.state.isExistData} onClick={this.toggle}>Eliminar</Button>{'    '}
+              <Button variant="outline-secondary" onClick={(path) => this.create("ubicacion/new")}>Crear</Button>
+            </Form.Group>
             </Col>
             <Col>
              {messageLabel }

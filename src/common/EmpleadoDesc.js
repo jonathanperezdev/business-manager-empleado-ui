@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Col, FormGroup, Label, Input, Row} from 'reactstrap';
+import { Container, Col, Form, Row} from 'react-bootstrap';
 
 const EmpleadoDesc = ({title, employee}) => {
   return (
@@ -8,28 +8,29 @@ const EmpleadoDesc = ({title, employee}) => {
         <h5>{title}</h5>
         <Row form>
           <Col sm="2">
-            <FormGroup>
-              <Label>Id</Label>
-              <Input type="text"
+            <Form.Group>
+              <Form.Label>Id</Form.Label>
+              <Form.Control 
+                type="text"
                 disabled
                 value={employee.id}/>
-            </FormGroup>
+            </Form.Group>
           </Col>
           <Col>
-            <FormGroup>
-              <Label for="contactoEmergenciaApellidos">Nombres</Label>
-              <Input type="text"
+            <Form.Group>
+              <Form.Label for="contactoEmergenciaApellidos">Nombres</Form.Label>
+              <Form.Control type="text"
                 disabled
                 value={employee.nombres}/>
-            </FormGroup>
+            </Form.Group>
           </Col>
           <Col sm="3">
-            <FormGroup>
-              <Label>Apellidos</Label>
-              <Input type="text"
+            <Form.Group>
+              <Form.Label>Apellidos</Form.Label>
+              <Form.Control type="text"
                 disabled
                 value={employee.apellidos}/>
-            </FormGroup>
+            </Form.Group>
           </Col>
         </Row>
       </Container>

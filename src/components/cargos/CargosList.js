@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Col, Form, FormGroup, Button, Alert, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
+import { Container, Col, Form, Button, Alert, Modal} from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import AppNavbar from 'menu/AppNavbar';
@@ -9,8 +9,8 @@ import Loading from 'common/Loading';
 import axios from 'axios';
 const options = Constant.OPTIONS_TABLE;
 
-const PATH_CARGOS_SERVICE = Constant.EMPLEADO_API+Constant.CARGOS_SERVICE;
-const PATH_CARGO_SERVICE = Constant.EMPLEADO_API+Constant.CARGO_SERVICE;
+const PATH_CARGOS_SERVICE = Constant.EMPLEADO_API+'/cargos';
+const PATH_CARGO_SERVICE = Constant.EMPLEADO_API+'/cargo';
 
 let rowId = '';
 
@@ -23,7 +23,7 @@ class CargosList extends Component {
       cargos: [],
       isLoading: true,
       error: null,
-      isExistData: true,
+      isExistData: false,
       deletedState: '',
       modal: false
     };
@@ -90,16 +90,16 @@ class CargosList extends Component {
 
   render() {
     const { cargos, error, isExistData, deletedState, formState, isLoading } = this.state;
-
+    
     if (isLoading) {
       return <Loading/>;
     }
 
     let messageLabel;
     if (deletedState == 'error') {
-      messageLabel = <Alert color="danger">{error.response.data.message}</Alert>;
+      messageLabel = <Alert variant="danger">{error.response.data.message}</Alert>;
     }else if(deletedState == 'success'){
-      messageLabel = <Alert color="success">El cargo se elimino satisfactoriamente</Alert>;
+      messageLabel = <Alert variant="success">El cargo se elimino satisfactoriamente</Alert>;
     }
 
     const columns = [{
@@ -125,16 +125,16 @@ class CargosList extends Component {
       onSelect: this.onRowSelect
     };
 
-    const modal = <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}>Confirmar Eliminar</ModalHeader>
-                      <ModalBody>
-                        Esta seguro de eliminar el cargo
-                      </ModalBody>
-                      <ModalFooter>
-                        <Button color="primary" onClick={() => this.remove(rowId)}>Eliminar</Button>{' '}
-                        <Button color="secondary" onClick={this.toggle}>Cancelar</Button>
-                      </ModalFooter>
-                    </Modal>;
+    const modal = <Modal show={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                    <Modal.Header toggle={this.toggle}>Confirmar Eliminar</Modal.Header>
+                    <Modal.Body>
+                      Esta seguro de eliminar el cargo
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button variant="outline-primary" onClick={() => this.remove(rowId)}>Eliminar</Button>{' '}
+                      <Button variant="outline-secondary" onClick={this.toggle}>Cancelar</Button>
+                    </Modal.Footer>
+                  </Modal>;
 
     return (
       <div>
@@ -144,21 +144,21 @@ class CargosList extends Component {
           <h2>Cargos</h2>
           <Form className="form">
             <Col>
-              <FormGroup>
+              <Form.Group>
                 <BootstrapTable
                   keyField='id'
                   data={ cargos }
                   columns={ columns }
                   selectRow={ selectRow }
                   pagination={ paginationFactory(options)} />
-              </FormGroup>
+              </Form.Group>
             </Col>
             <Col>
-            <FormGroup>
-              <Button color="primary" disabled={!this.state.isExistData} onClick={() => this.edit(rowId)} >Modificar</Button>{'    '}
-              <Button color="primary" disabled={!this.state.isExistData} onClick={this.toggle}>Eliminar</Button>{'    '}
-              <Button color="primary" onClick={() => this.create("cargo/new")}>Crear Cargo</Button>
-            </FormGroup>
+            <Form.Group>
+              <Button variant="outline-primary" disabled={!this.state.isExistData} onClick={() => this.edit(rowId)} >Modificar</Button>{'    '}
+              <Button variant="outline-secondary" disabled={!this.state.isExistData} onClick={this.toggle}>Eliminar</Button>{'    '}
+              <Button variant="outline-secondary" onClick={() => this.create("cargo/new")}>Crear Cargo</Button>
+            </Form.Group>
             </Col>
             <Col>
              {messageLabel }

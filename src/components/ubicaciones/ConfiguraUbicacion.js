@@ -2,18 +2,12 @@ import React, { Component } from "react";
 import {
   Container,
   Col,
-  Form,
-  FormGroup,
-  Label,
-  Button,
-  Input,
+  Form,  
+  Button,  
   Alert,
   Row,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "reactstrap";
+  Modal
+} from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import AppNavbar from "menu/AppNavbar";
@@ -23,17 +17,17 @@ import axios from "axios";
 const options = Constant.OPTIONS_TABLE;
 
 const PATH_UBICACIONES_SERVICE =
-  Constant.EMPLEADO_API + Constant.UBICACIONES_SERVICE;
+  Constant.EMPLEADO_API + '/ubicaciones';
 const PATH_OFICIALES_SERVICE =
-  Constant.EMPLEADO_API + Constant.OFICIALES_SEARCH_SERVICE;
+  Constant.EMPLEADO_API + '/empleados/oficial';
 const PATH_INGENIEROS_SERVICE =
-  Constant.EMPLEADO_API + Constant.INGENIEROS_SEARCH_SERVICE;
+  Constant.EMPLEADO_API + '/empleados/residente';
 const PATH_UBICACION_CONFIGURACION =
-  Constant.EMPLEADO_API + Constant.UBICACION_CONFIGURACION;
+  Constant.EMPLEADO_API + '/ubicacion/configuracion';
 const FIND_EMPLEADOS_UBICACION =
-  Constant.EMPLEADO_API + Constant.EMPLEADO_UBICACION;
+  Constant.EMPLEADO_API + '/empleado/ubicacion/';
 const PATH_EMPLEADO_UBICACION_SERVICE =
-  Constant.EMPLEADO_API + Constant.EMPLEADOS_UBICACION_SERVICE;  
+  Constant.EMPLEADO_API + '/empleados/ubicacion/';
 
 class ConfiguraUbicacion extends Component {
   emptyState = {
@@ -49,6 +43,7 @@ class ConfiguraUbicacion extends Component {
       request: {},
       isLoading: true,
       ubicaciones: [],
+      ubicacion: {},
       oficiales: [],
       ingenieros: [],
       empleados: [],
@@ -65,7 +60,7 @@ class ConfiguraUbicacion extends Component {
         this.setState({
           empleados: result.data,
           isLoading: false,
-          isExistData: result.data.length == 0 ? false : true,
+          isExistData: result.data.length > 0,
           formState: "ok",
         });
       })
@@ -81,70 +76,70 @@ class ConfiguraUbicacion extends Component {
 
   async componentDidMount() {
     let {fields} = this.state;
-
     const id = this.props.match.params.idUbicacion;
 
-    let ubicacion;
+    let ubicacion;    
     await axios
       .get(PATH_UBICACIONES_SERVICE)
       .then((result) => {
         ubicacion =
-          id === "new" ? result.data[0] : result.data.find((x) => x.id == id);
+          id == "new" ? result.data[0] : result.data.find((x) => x.id == id);        
         fields.idUbicacion = ubicacion.id;
         this.setState({
           ubicaciones: result.data,
           isLoading: false,
           formState: "ok",
           selectedUbicacion: result.data[0].id,
-          fields: fields,
+          fields: fields
         });
-      })
-      .catch((error) =>
+      }).catch(error =>
         this.setState({
           error,
           isLoading: false,
           formState: "error",
         })
       );
-
-    if (typeof ubicacion !== "undefined" && ubicacion.tipo == "OBRA") {
-      await axios
-        .get(PATH_OFICIALES_SERVICE)
-        .then((result) => {
-          fields.oficialACargo = ubicacion.oficialACargo;
-          this.setState({
-            oficiales: result.data,
-            isLoading: false,
-            formState: "ok",
-            selectedOficial: ubicacion.oficialACargo,
-          });
-        })
-        .catch((error) =>
-          this.setState({
-            error,
-            isLoading: false,
-            formState: "error",
+        
+    if (typeof ubicacion !== "undefined") {
+      if (ubicacion.tipo == "OBRA") {
+        await axios
+          .get(PATH_OFICIALES_SERVICE)
+          .then((result) => {
+            fields.oficialACargo = ubicacion.oficialACargo;
+            this.setState({
+              oficiales: result.data,
+              isLoading: false,
+              formState: "ok",
+              selectedOficial: ubicacion.oficialACargo,
+            });
           })
-        );
+          .catch((error) =>
+            this.setState({
+              error,
+              isLoading: false,
+              formState: "error",
+            })
+          );
 
-      await axios
-        .get(PATH_INGENIEROS_SERVICE)
-        .then((result) => {
-          fields.ingenieroACargo = ubicacion.ingenieroACargo;
-          this.setState({
-            ingenieros: result.data,
-            isLoading: false,
-            formState: "ok",
-            selectedIngeniero: ubicacion.ingenieroACargo,
-          });
-        })
-        .catch((error) =>
-          this.setState({
-            error,
-            isLoading: false,
-            formState: "error",
+        await axios
+          .get(PATH_INGENIEROS_SERVICE)
+          .then((result) => {
+            fields.ingenieroACargo = ubicacion.ingenieroACargo;
+            this.setState({
+              ingenieros: result.data,
+              isLoading: false,
+              formState: "ok",
+              selectedIngeniero: ubicacion.ingenieroACargo,
+            });
           })
-        );
+          .catch((error) =>
+            this.setState({
+              error,
+              isLoading: false,
+              formState: "error",
+            })
+          );
+      }
 
       this.loadEmpleados(fields.idUbicacion);
     }
@@ -286,11 +281,11 @@ class ConfiguraUbicacion extends Component {
 
     let messageLabel;
     if (formState == "error") {
-      messageLabel = (<Alert color="danger">{error.response.data.message}</Alert>);
+      messageLabel = (<Alert variant="danger">{error.response.data.message}</Alert>);
     } else if (formState == "saved") {
-      messageLabel = (<Alert color="success">La ubicacion se guardo satisfactoriamente</Alert>);
+      messageLabel = (<Alert variant="success">La ubicacion se guardo satisfactoriamente</Alert>);
     } else if (formState == "noEmpleadosToQuit") {
-      messageLabel = (<Alert color="success">Debe seleccionar por lo menos un empleado</Alert>);
+      messageLabel = (<Alert variant="success">Debe seleccionar por lo menos un empleado</Alert>);
     }
 
     let optionUbicacion = ubicaciones.map((ubicacion) => (
@@ -335,11 +330,10 @@ class ConfiguraUbicacion extends Component {
         <Col>
           <Row form>
             <Col>
-              <FormGroup>
-                <Label for="ingenieros">Ingeniero a cargo</Label>
-                <Input
-                  ref="ingenieros"
-                  type="select"                  
+              <Form.Group controlId='confUbicacion.ingenieros'>
+                <Form.Label>Ingeniero a cargo</Form.Label>
+                <Form.Control                  
+                  as="select"                  
                   value={this.state.fields.ingenieroACargo}
                   onChange={(e) => {
                     this.handleChange(e.target.value, "ingenieroACargo");
@@ -349,15 +343,14 @@ class ConfiguraUbicacion extends Component {
                     Seleccionar
                   </option>
                   {optionIngeniero}
-                </Input>
-              </FormGroup>
+                </Form.Control>
+              </Form.Group>
             </Col>
             <Col>
-              <FormGroup>
-                <Label for="oficiales">Oficial a cargo</Label>
-                <Input
-                  ref="oficiales"
-                  type="select"                  
+              <Form.Group controlId='confUbicacion.oficiales'>
+                <Form.Label>Oficial a cargo</Form.Label>
+                <Form.Control                  
+                  as="select"                  
                   value={this.state.fields.oficialACargo}
                   onChange={(e) => {
                     this.handleChange(e.target.value, "oficialACargo");
@@ -367,8 +360,8 @@ class ConfiguraUbicacion extends Component {
                     Seleccionar
                   </option>
                   {optionOficial}
-                </Input>
-              </FormGroup>
+                </Form.Control>
+              </Form.Group>
             </Col>
           </Row>
         </Col>
@@ -414,7 +407,7 @@ class ConfiguraUbicacion extends Component {
           <Col>
             <Container className="App">
               <h5>Empleados</h5>
-              <FormGroup>
+              <Form.Group controlId='confUbicacion.'>
                 <BootstrapTable
                   keyField="id"
                   data={empleados}
@@ -422,7 +415,7 @@ class ConfiguraUbicacion extends Component {
                   selectRow={selectRow}
                   pagination={paginationFactory(options)}
                 />
-              </FormGroup>
+              </Form.Group>
             </Container>
           </Col>
         </div>
@@ -433,47 +426,47 @@ class ConfiguraUbicacion extends Component {
 
     const modalSave = (
       <Modal
-        isOpen={this.state.modalSave}
+        show={this.state.modalSave}
         toggle={this.toggleSave}
         className={this.props.className}
       >
-        <ModalHeader toggle={this.toggleSave}>
+        <Modal.Header toggle={this.toggleSave}>
           Confirmar guardar ubicacion
-        </ModalHeader>
-        <ModalBody>
+        </Modal.Header>
+        <Modal.Body>
           Esta seguro de guardar la ubicacion
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={this.save}>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="outline-primary" onClick={this.save}>
             Guardar
           </Button>{" "}
-          <Button color="secondary" onClick={this.toggleSave}>
+          <Button variant="outline-secondary" onClick={this.toggleSave}>
             Cancelar
           </Button>
-        </ModalFooter>
+        </Modal.Footer>
       </Modal>
     );
 
     const modalQuitarEmpleados = (
       <Modal
-        isOpen={this.state.modalEmpleados}
+        show={this.state.modalEmpleados}
         toggle={this.toggleEmpleados}
         className={this.props.className}
       >
-        <ModalHeader toggle={this.toggleEmpleados}>
+        <Modal.Header toggle={this.toggleEmpleados}>
           Quitar Empleados
-        </ModalHeader>
-        <ModalBody>
+        </Modal.Header>
+        <Modal.Body>
           Esta seguro de quitar de la ubicacion {ubicacion.nombre} {selected.length} empleados
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={this.quitarEmpleados}>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="outline-primary" onClick={this.quitarEmpleados}>
             Quitar Empleados
           </Button>{" "}
-          <Button color="secondary" onClick={this.toggleEmpleados}>
+          <Button variant="outline-secondary" onClick={this.toggleEmpleados}>
             Cancelar
           </Button>
-        </ModalFooter>
+        </Modal.Footer>
       </Modal>
     );
 
@@ -486,36 +479,35 @@ class ConfiguraUbicacion extends Component {
           <h2>Configuracion Ubicacion</h2>
           <Form className="form">
             <Col>
-              <FormGroup>
-                <Label for="ubicaciones">Lugar de Trabajo</Label>
-                <Input
-                  ref="ubicaciones"
-                  type="select"                  
+              <Form.Group controlId='confUbicacion.ubicaciones'>
+                <Form.Label>Lugar de Trabajo</Form.Label>
+                <Form.Control                  
+                  as="select"                  
                   value={this.state.fields.idUbicacion}
                   onChange={(e) => {
                     this.handleUbicacionChange(e.target.value);
                   }}
                 >
                   {optionUbicacion}
-                </Input>
-              </FormGroup>
+                </Form.Control>
+              </Form.Group>
             </Col>
             {ingenieroOficialInput}
             {tableEmpleado}
             <Col>
-              <FormGroup>
-                <Button color="primary" onClick={this.toggleSave}>
+              <Form.Group>
+                <Button variant="outline-primary" onClick={this.toggleSave}>
                   Guardar
                 </Button>
                 {"    "}
-                <Button color="primary" onClick={this.agregarEmpleados}>
+                <Button variant="outline-primary" onClick={this.agregarEmpleados}>
                   Agregar Empleados
                 </Button>
                 {"    "}
-                <Button color="primary" onClick={this.toggleEmpleados}>
+                <Button variant="outline-primary" onClick={this.toggleEmpleados}>
                   Quitar Empleados
                 </Button>
-              </FormGroup>
+              </Form.Group>
             </Col>
             <Col>{messageLabel}</Col>
           </Form>

@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
-import { Container, Col, Form, FormGroup, Label, Button, Input, Alert, Row} from 'reactstrap';
+import {withRouter } from 'react-router-dom';
+import { Container, Col, Form, Button, Alert, Row} from 'react-bootstrap';
 import AppNavbar from 'menu/AppNavbar';
-import 'css/App.css';
 import Constant from 'common/Constant';
 import axios from 'axios';
 import {validateRequired} from 'common/Validator';
 import UbicacionDesc from 'common/UbicacionDesc';
 import Loading from 'common/Loading';
 
-const PATH_EMPLEADO_SERVICE = Constant.EMPLEADO_API+Constant.EMPLEADO_SERVICE;
-const PATH_CARGOS_SERVICE = Constant.EMPLEADO_API+Constant.CARGOS_SERVICE;
-const PATH_TIPO_DOCUMENTOS_SERVICE = Constant.EMPLEADO_API+Constant.TIPO_DOCUMENTOS_SERVICE;
+import 'css/App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+const PATH_EMPLEADO_SERVICE = Constant.EMPLEADO_API+'/empleado';
+const PATH_CARGOS_SERVICE = Constant.EMPLEADO_API+'/cargos';
+const PATH_TIPO_DOCUMENTOS_SERVICE = Constant.EMPLEADO_API+'/tipoDocumentos';
+const PATH_UBICACION_SERVICE = Constant.EMPLEADO_API + '/ubicacion';
 
 class EmpleadoEdit extends Component {
 
@@ -25,7 +28,8 @@ class EmpleadoEdit extends Component {
       cargos:[],
       tipoDocumentos:[],
       firstCargo:'',
-      firstTipoDocumento:''
+      firstTipoDocumento:'',
+      ubicacion: {}
     }
 
     this.resetForm();
@@ -33,12 +37,20 @@ class EmpleadoEdit extends Component {
 
   async componentDidMount() {
     if (this.props.match.params.id !== 'new') {
-      axios.get(PATH_EMPLEADO_SERVICE+`/${this.props.match.params.id}`)
-      .then(result => this.setState({fields: result.data, formState: 'success', isLoading: false}))
-      .catch(error => this.setState({ error, formState: "error", isLoading: false}));    
+      
+      let idUbicacion;
+      await axios.get(PATH_EMPLEADO_SERVICE+`/${this.props.match.params.id}`)
+      .then(result => {
+        idUbicacion = result.data.ubicacion;
+        this.setState({fields: result.data, formState: 'success', isLoading: false})})
+      .catch(error => this.setState({ error, formState: "error", isLoading: false}));
+      
+      await axios.get(PATH_UBICACION_SERVICE+`/${idUbicacion}`)
+      .then(result => this.setState({ubicacion: result.data, formState: 'success', isLoading: false}))
+      .catch(error => this.setState({ error, formState: "error", isLoading: false}));
     }
 
-    axios.get(PATH_CARGOS_SERVICE)
+    await axios.get(PATH_CARGOS_SERVICE)
     .then(result => {
       let {fields} = this.state;
       fields.cargo = result.data[0].id;
@@ -49,7 +61,7 @@ class EmpleadoEdit extends Component {
       error, formState: "error", isLoading: false
     }));
 
-    axios.get(PATH_TIPO_DOCUMENTOS_SERVICE)
+    await axios.get(PATH_TIPO_DOCUMENTOS_SERVICE)
       .then(result => {
         let {fields} = this.state;
         fields.tipoDocumento = result.data[0].id;
@@ -82,6 +94,7 @@ class EmpleadoEdit extends Component {
 
   handleValidation(){
     let {fields} = this.state;
+
     let errors = {
       nombres: validateRequired(fields.nombres, "nombres"),
       apellidos: validateRequired(fields.apellidos, "apellidos"),
@@ -89,12 +102,12 @@ class EmpleadoEdit extends Component {
       direccion: validateRequired(fields.direccion, "direccion"),
       numeroDocumento: validateRequired(fields.numeroDocumento, "numero de documento")
     };
-    let formState = '';
 
+    let formState = '';
     if(errors.nombres || errors.apellidos || errors.salario || errors.direccion || errors.numeroDocumento){
       formState = 'invalid';
-    }
-    this.setState({errors: errors, formState: formState});
+    }    
+    this.setState({errors: errors, formState: formState, isLoading: false});
 
     return formState ==! 'invalid';
   }
@@ -103,10 +116,9 @@ class EmpleadoEdit extends Component {
     this.setState({isLoading: true});
 
     const {fields} = this.state;
-    const id = fields.id;    
+    const id = fields.id;
 
-    if(this.handleValidation()){
-
+    if(this.handleValidation()){      
       await axios({
         method: (id) ? 'PUT' : 'POST',
         url: (id) ? PATH_EMPLEADO_SERVICE+'/'+(id) : PATH_EMPLEADO_SERVICE,
@@ -127,44 +139,44 @@ class EmpleadoEdit extends Component {
   };
 
   render = () => {
-    const {fields, formState, errors, error, cargos, tipoDocumentos, firstCargo, firstTipoDocumento, isLoading} = this.state;
-
+    const {fields, formState, errors, error, cargos, tipoDocumentos, firstCargo, firstTipoDocumento, isLoading, ubicacion} = this.state;
+    
     if (isLoading) {
       return  <Loading/> 
     }
 
     let messageLabel;
     if (formState == 'error') {
-      messageLabel = <Alert color="danger">{error.response.data.message}</Alert>;
+      messageLabel = <Alert variant="danger">{error.response.data.message}</Alert>;
     } else if(formState == 'invalid'){
-      messageLabel = <Alert color="danger">El fomulario tiene errores</Alert>;
+      messageLabel = <Alert variant="danger">El fomulario tiene errores</Alert>;
     }else if (formState == 'saved') {
-      messageLabel = <Alert color="success">El empleado fue guardado satisfactoriamente</Alert>;
+      messageLabel = <Alert variant="success">El empleado fue guardado satisfactoriamente</Alert>;
     } 
 
     let messageNombres;
     if(errors.nombres){
-      messageNombres = <Alert color="danger">{this.state.errors.nombres}</Alert>;
+      messageNombres = <Alert variant="danger">{this.state.errors.nombres}</Alert>;
     }
 
     let messageApellidos;
     if(errors.apellidos){
-      messageApellidos = <Alert color="danger">{this.state.errors.apellidos}</Alert>;
+      messageApellidos = <Alert variant="danger">{this.state.errors.apellidos}</Alert>;
     }
 
     let messageSalario;
     if(errors.salario){
-      messageSalario = <Alert color="danger">{this.state.errors.salario}</Alert>;
+      messageSalario = <Alert variant="danger">{this.state.errors.salario}</Alert>;
     }
 
     let messageDireccion;
     if(errors.direccion){
-      messageDireccion = <Alert color="danger">{this.state.errors.direccion}</Alert>;
+      messageDireccion = <Alert variant="danger">{this.state.errors.direccion}</Alert>;
     }
 
     let messageNumeroDocumento;
     if(errors.numeroDocumento){
-      messageNumeroDocumento = <Alert color="danger">{this.state.errors.numeroDocumento}</Alert>;
+      messageNumeroDocumento = <Alert variant="danger">{this.state.errors.numeroDocumento}</Alert>;
     }
 
     let optionCargos = cargos.map((cargo) =>
@@ -179,11 +191,11 @@ class EmpleadoEdit extends Component {
         default={(fields.id)?fields.tipoDocumento:firstTipoDocumento} >{tipoDocumento.nombre}</option>
     );
 
-    let ubicacion;
-    if(this.state.fields.ubicacion){
-      ubicacion =
+    let UbicacionComponent;
+    if(ubicacion){
+      UbicacionComponent =
       <UbicacionDesc
-        ubicacion ={this.state.fields.ubicacion}
+        ubicacion ={ubicacion}
         />;
     }
 
@@ -199,40 +211,37 @@ class EmpleadoEdit extends Component {
             <Col>
               <Row form>
               <Col sm="2">
-                  <FormGroup>
-                    <Label for="cargo">Cargo</Label>
-                    <Input
-                      ref="cargo"
-                      type="select"
+                  <Form.Group>
+                    <Form.Label>Cargo</Form.Label>
+                    <Form.Control                      
+                      as="select"
                       value={this.state.fields.cargo}
                       onChange={(e) => {
                         this.handleChange(e.target.value, "cargo");
                       }}
                     >
                       {optionCargos}
-                    </Input>
-                  </FormGroup>
+                    </Form.Control>
+                  </Form.Group>
                 </Col>
                 <Col>
-                  <FormGroup>
-                    <Label for="tipoDocumento">Tipo Documento</Label>
-                    <Input
-                      ref="tipoDocumento"
-                      type="select"
+                  <Form.Group controlId="cargo.tipoDocumento">
+                    <Form.Label>Tipo</Form.Label>
+                    <Form.Control                      
+                      as="select"
                       value={this.state.fields.tipoDocumento}
                       onChange={(e) => {
                         this.handleChange(e.target.value, "tipoDocumento");
                       }}
                     >
                       {optionTipoDocumentos}
-                    </Input>
-                  </FormGroup>
+                    </Form.Control>
+                  </Form.Group>
                 </Col>
                 <Col>
-                  <FormGroup>
-                    <Label for="numeroDocumento">Numero Documento</Label>
-                    <Input
-                      ref="numeroDocumento"
+                  <Form.Group controlId="empleado.numeroDocumento">
+                    <Form.Label>Numero</Form.Label>
+                    <Form.Control                      
                       type="number"
                       size="15"
                       placeholder="Numero de documento"
@@ -242,17 +251,16 @@ class EmpleadoEdit extends Component {
                       }}
                     />
                     {messageNumeroDocumento}
-                  </FormGroup>
+                  </Form.Group>
                 </Col>
               </Row>
             </Col>
             <Col>
               <Row form>                
                 <Col>
-                  <FormGroup>
-                    <Label for="nombres">Nombres</Label>
-                    <Input
-                      ref="nombres"
+                  <Form.Group controlId="empleado.nombres">
+                    <Form.Label>Nombres</Form.Label>
+                    <Form.Control                      
                       type="text"
                       size="30"
                       placeholder="Nombres del empleado"
@@ -262,13 +270,12 @@ class EmpleadoEdit extends Component {
                       }}
                     />
                     {messageNombres}
-                  </FormGroup>
+                  </Form.Group>
                 </Col>
                 <Col>
-                  <FormGroup>
-                    <Label for="apellidos">Apellidos</Label>
-                    <Input
-                      ref="apellidos"
+                  <Form.Group controlId="empleado.apellidos">
+                    <Form.Label>Apellidos</Form.Label>
+                    <Form.Control                      
                       type="text"
                       size="30"
                       placeholder="Apellidos del empleado"
@@ -278,17 +285,16 @@ class EmpleadoEdit extends Component {
                       }}
                     />
                     {messageApellidos}
-                  </FormGroup>
+                  </Form.Group>
                 </Col>
               </Row>
             </Col>
             <Col>
               <Row form>
                 <Col sm="2">
-                  <FormGroup>
-                    <Label for="salario">Salario</Label>
-                    <Input
-                      ref="salario"                      
+                  <Form.Group controlId="empleado.salario">
+                    <Form.Label>Salario</Form.Label>
+                    <Form.Control                                            
                       type="number"
                       size="8"
                       placeholder="Salario del empleado"
@@ -298,13 +304,12 @@ class EmpleadoEdit extends Component {
                       }}
                     />
                     {messageSalario}
-                  </FormGroup>
+                  </Form.Group>
                 </Col>
                 <Col>
-                  <FormGroup>
-                    <Label for="direccion">Direccion</Label>
-                    <Input
-                      ref="direccion"
+                  <Form.Group controlId="empleado.direccion">
+                    <Form.Label>Direccion</Form.Label>
+                    <Form.Control                      
                       type="text"
                       size="70"
                       placeholder="Direccion del empleado"
@@ -314,13 +319,12 @@ class EmpleadoEdit extends Component {
                       }}
                     />
                     {messageDireccion}
-                  </FormGroup>
+                  </Form.Group>
                 </Col>
                 <Col>
-                  <FormGroup>
-                    <Label for="numeroCelular">Numero Celular</Label>
-                    <Input
-                      ref="numeroCelular"                      
+                  <Form.Group controlId="empleado.numeroCelular">
+                    <Form.Label>Numero Celular</Form.Label>
+                    <Form.Control                                           
                       type="number"
                       size="13"
                       placeholder="Celular"
@@ -329,16 +333,15 @@ class EmpleadoEdit extends Component {
                         this.handleChange(e.target.value, "numeroCelular");
                       }}
                     />
-                  </FormGroup>
+                  </Form.Group>
                 </Col>
               </Row>
             </Col>
 
             <Col sm="2">
-              <FormGroup>
-                <Label for="telefono">Telefono</Label>
-                <Input
-                  ref="telefono"
+              <Form.Group controlId="empleado.telefono">
+                <Form.Label>Telefono</Form.Label>
+                <Form.Control                  
                   type="number"
                   size="13"
                   placeholder="Telefono"
@@ -347,7 +350,7 @@ class EmpleadoEdit extends Component {
                     this.handleChange(e.target.value, "telefono");
                   }}
                 />
-              </FormGroup>
+              </Form.Group>
             </Col>
 
             <Col>
@@ -355,10 +358,9 @@ class EmpleadoEdit extends Component {
                 <h5>Contacto de Emergencia</h5>
                 <Row form>
                   <Col>
-                    <FormGroup>
-                      <Label for="contactoEmergenciaNombres">Nombres</Label>
-                      <Input
-                        ref="contactoEmergenciaNombres"
+                    <Form.Group controlId="empleado.contactoEmergenciaNombres">
+                      <Form.Label>Nombres</Form.Label>
+                      <Form.Control                        
                         type="text"
                         size="30"
                         placeholder="Nombres"
@@ -370,13 +372,12 @@ class EmpleadoEdit extends Component {
                           );
                         }}
                       />
-                    </FormGroup>
+                    </Form.Group>
                   </Col>
                   <Col>
-                    <FormGroup>
-                      <Label for="contactoEmergenciaApellidos">Apellidos</Label>
-                      <Input
-                        ref="contactoEmergenciaApellidos"
+                    <Form.Group controlId="empleado.contactoEmergenciaApellidos">
+                      <Form.Label>Apellidos</Form.Label>
+                      <Form.Control                        
                         type="text"
                         size="30"
                         placeholder="Apellidos"
@@ -388,13 +389,12 @@ class EmpleadoEdit extends Component {
                           );
                         }}
                       />
-                    </FormGroup>
+                    </Form.Group>
                   </Col>
                   <Col sm="3">
-                    <FormGroup>
-                      <Label for="contactoEmergenciaTelefono">Telefono</Label>
-                      <Input
-                        ref="contactoEmergenciaTelefono"
+                    <Form.Group controlId="empleado.contactoEmergenciaTelefono">
+                      <Form.Label>Telefono</Form.Label>
+                      <Form.Control                        
                         type="number"
                         size="13"
                         placeholder="Numero celular o telefonico"
@@ -406,23 +406,23 @@ class EmpleadoEdit extends Component {
                           );
                         }}
                       />
-                    </FormGroup>
+                    </Form.Group>
                   </Col>
                 </Row>
               </Container>
             </Col>
-            {ubicacion}            
-            <FormGroup>
-              <Button disabled={formState=='saved'} color="primary" onClick={this.save}>
+            {UbicacionComponent}            
+            <Form.Group>
+              <Button disabled={formState=='saved'} variant="outline-primary" onClick={this.save}>
                 Guardar
               </Button>{" "}
-              <Button color="secondary" tag={Link} to="/empleados">
+              <Button variant="outline-secondary" href="/empleados">
                 Regresar
               </Button>{" "}
-              <Button color="secondary" onClick={this.resetForm}>
+              <Button variant="outline-secondary" onClick={this.resetForm}>
                 Nuevo
               </Button>
-            </FormGroup>
+            </Form.Group>
             <Col>
              {messageLabel}
             </Col>
