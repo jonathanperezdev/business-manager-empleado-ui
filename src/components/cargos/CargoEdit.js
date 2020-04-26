@@ -1,23 +1,19 @@
 import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import {withRouter } from "react-router-dom";
 import {
   Container,
   Col,
   Form,
-  FormGroup,
-  Label,
-  Button,
-  Input,
-  Alert,
-} from "reactstrap";
+  Button,  
+  Alert
+} from "react-bootstrap";
 import AppNavbar from "menu/AppNavbar";
-import "css/App.css";
 import Constant from "common/Constant";
 import axios from "axios";
 import { validateRequired } from "common/Validator";
 import Loading from 'common/Loading';
 
-const PATH_CARGO_SERVICE = Constant.EMPLEADO_API + Constant.CARGO_SERVICE;
+const PATH_CARGO_SERVICE = Constant.EMPLEADO_API + '/cargo';
 
 class CargoEdit extends Component {
   emptyState = {
@@ -62,7 +58,7 @@ class CargoEdit extends Component {
       formState = "invalid";
     }
 
-    this.setState({ errors: errors, formState: formState });
+    this.setState({ errors: errors, formState: formState, isLoading: false });
     return formState == !"invalid";
   };
 
@@ -101,17 +97,17 @@ class CargoEdit extends Component {
 
     let messageLabel;
     if (formState == "error") {
-      messageLabel = (   <Alert color="danger">{error.response.data.message}</Alert>);
+      messageLabel = (   <Alert variant="danger">{error.response.data.message}</Alert>);
     } else if (formState == "invalid") {
-      messageLabel = <Alert color="danger">El fomulario tiene errores</Alert>;
+      messageLabel = <Alert variant="danger">El fomulario tiene errores</Alert>;
     } else if (formState == "saved") {
-      messageLabel = (<Alert color="success">El cargo fue guardado satisfactoriamente</Alert>);
+      messageLabel = (<Alert variant="success">El cargo fue guardado satisfactoriamente</Alert>);
     }
 
     let messageNombre;
     if (errors["nombre"]) {
       messageNombre = (
-        <Alert color="danger">{this.state.errors["nombre"]}</Alert>
+        <Alert variant="danger">{this.state.errors["nombre"]}</Alert>
       );
     }
 
@@ -125,10 +121,9 @@ class CargoEdit extends Component {
           {title}
           <Form className="form">
             <Col>
-              <FormGroup>
-                <Label for="nombre">Cargo</Label>
-                <Input
-                  ref="nombre"
+              <Form.Group controlId="cargo.nombre">
+                <Form.Label>Cargo</Form.Label>
+                <Form.Control type="text"                  
                   type="text"
                   size="30"
                   placeholder="Cargo"
@@ -138,52 +133,49 @@ class CargoEdit extends Component {
                   }}
                 />
                 {messageNombre}
-              </FormGroup>
+              </Form.Group>
             </Col>
             <Col>
-              <FormGroup>
-                <Label for="descripcion">Descripcion</Label>
-                <textarea
-                  ref="descripcion"
-                  cols={70}
-                  rows={3}
-                  maxLength={300}
+              <Form.Group controlId="cargo.descripcion">
+                <Form.Label>Descripcion</Form.Label>
+                <Form.Control as="textarea"                  
+                  cols="70"
+                  rows="3"
+                  maxLength="300"
                   placeholder="descripcion"
                   value={this.state.fields.descripcion}
                   onChange={(e) => {
                     this.handleChange(e.target.value, "descripcion");
                   }}
                 />
-              </FormGroup>
+              </Form.Group>
             </Col>
             <Col>
-              <FormGroup>
-                <Label for="funciones">Funciones</Label>
-                <textarea
-                  ref="funciones"
-                  cols={70}
-                  rows={3}
-                  maxLength={300}
+              <Form.Group controlId="cargo.funciones">
+                <Form.Label for="funciones">Funciones</Form.Label>
+                <Form.Control as="textarea" 
+                  rows="3"
+                  cols="70"
+                  maxLength="300"
                   placeholder="funciones"
                   value={this.state.fields.funciones}
                   onChange={(e) => {
                     this.handleChange(e.target.value, "funciones");
                   }}
                 />
-              </FormGroup>
+              </Form.Group>
             </Col>
-            <FormGroup
-            >
-              <Button disabled={formState=='saved'} color="primary" onClick={this.save}>
+            <Form.Group controlId="cargo.buttons">
+              <Button disabled={formState=='saved'} variant="outline-primary" onClick={this.save}>
                 Guardar
               </Button>{" "}
-              <Button color="secondary" tag={Link} to="/cargos">
+              <Button variant="outline-secondary" href="/cargos">
                 Regresar
               </Button>{" "}
-              <Button color="secondary" onClick={this.resetForm}>
+              <Button variant="outline-secondary" onClick={this.resetForm}>
                 Nuevo
               </Button>
-            </FormGroup>
+              </Form.Group>
             <Col>{messageLabel}</Col>
           </Form>
         </Container>

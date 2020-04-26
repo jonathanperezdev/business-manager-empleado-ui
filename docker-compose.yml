@@ -1,0 +1,18 @@
+version: '3.5'
+services:
+    BMEMPLEADOUI:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: business-manager-empleado-ui
+        expose:
+            - 9000
+        ports:
+            - 9000:9000
+        labels:
+            NAME: "business-manager-empleado-ui"
+        tty: true
+networks:
+    default:
+        external:
+            name: BM_NETWORK

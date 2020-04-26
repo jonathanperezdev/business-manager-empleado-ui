@@ -1,12 +1,12 @@
 import React from 'react';
-import {Spinner} from 'reactstrap';
+import {Spinner} from 'react-bootstrap';
 
 const Loading = () => {
   return (    
     <div>
-      <Spinner type="grow" color="info" />
-      <Spinner type="grow" color="info" />
-      <Spinner type="grow" color="info" />
+      <Spinner animation="grow" variant="info" />
+      <Spinner animation="grow" variant="info" />
+      <Spinner animation="grow" variant="info" />
     </div>
   );
 }

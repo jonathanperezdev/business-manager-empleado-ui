@@ -4,12 +4,9 @@ import {
   Container,
   Col,
   Form,
-  FormGroup,
-  Label,
-  Button,
-  Input,
-  Alert,
-} from "reactstrap";
+  Button,  
+  Alert
+} from "react-bootstrap";
 import AppNavbar from "menu/AppNavbar";
 import "css/App.css";
 import Constant from "common/Constant";
@@ -18,8 +15,7 @@ import EmpleadoDesc from "common/EmpleadoDesc";
 import { validateRequired } from "common/Validator";
 import Loading from 'common/Loading';
 
-const PATH_UBICACION_SERVICE =
-  Constant.EMPLEADO_API + Constant.UBICACION_SERVICE;
+const PATH_UBICACION_SERVICE = Constant.EMPLEADO_API + '/ubicacion';
 
 class UbicacionEdit extends Component {
   constructor(props) {
@@ -70,7 +66,7 @@ class UbicacionEdit extends Component {
     if (errors.nombre || errors.direccion) {
       formState = "invalid";
     }
-    this.setState({ errors: errors, formState: formState });
+    this.setState({ errors: errors, formState: formState, isLoading: false });
     return formState == !"invalid";
   }
 
@@ -110,24 +106,24 @@ class UbicacionEdit extends Component {
     let messageLabel;
 
     if (formState == "error") {
-      messageLabel = (<Alert color="danger">{error.response.data.message}</Alert>);
+      messageLabel = (<Alert variant="danger">{error.response.data.message}</Alert>);
     }else if (formState == "invalid") {
-      messageLabel = <Alert color="danger">El fomulario tiene errores</Alert>;
+      messageLabel = <Alert variant="danger">El fomulario tiene errores</Alert>;
     } else if (formState == "saved") {
-      messageLabel = (<Alert color="success">La ubicacion fue guardada satisfactoriamente</Alert>);
+      messageLabel = (<Alert variant="success">La ubicacion fue guardada satisfactoriamente</Alert>);
     }
     
     let messageNombre;
     if (errors["nombre"]) {
       messageNombre = (
-        <Alert color="danger">{this.state.errors["nombre"]}</Alert>
+        <Alert variant="danger">{this.state.errors["nombre"]}</Alert>
       );
     }
 
     let messageDireccion;
     if (errors["direccion"]) {
       messageDireccion = (
-        <Alert color="danger">{this.state.errors["direccion"]}</Alert>
+        <Alert variant="danger">{this.state.errors["direccion"]}</Alert>
       );
     }   
 
@@ -161,10 +157,9 @@ class UbicacionEdit extends Component {
           {title}
           <Form className="form">
             <Col>
-              <FormGroup>
-                <Label for="nombre">Nombre</Label>
-                <Input
-                  ref="nombre"
+              <Form.Group controlId='ubicacion.nombre' >
+                <Form.Label>Nombre</Form.Label>
+                <Form.Control
                   type="text"
                   size="30"
                   placeholder="Nombre de la obra u oficina"
@@ -174,13 +169,12 @@ class UbicacionEdit extends Component {
                   }}
                 />
                 {messageNombre}
-              </FormGroup>
+              </Form.Group>
             </Col>
             <Col>
-              <FormGroup>
-                <Label for="direccion">Direccion</Label>
-                <Input
-                  ref="direccion"
+              <Form.Group controlId='ubicacion.direccion'>
+                <Form.Label>Direccion</Form.Label>
+                <Form.Control                  
                   type="text"
                   size="70"
                   placeholder="Direccion de la obra u oficina"
@@ -190,14 +184,13 @@ class UbicacionEdit extends Component {
                   }}
                 />
                 {messageDireccion}
-              </FormGroup>
+              </Form.Group>
             </Col>
             <Col>
-              <FormGroup>
-                <Label for="Tipo">Tipo</Label>
-                <Input
-                  type="select"
-                  ref="tipo"
+              <Form.Group controlId='ubicacion.tipo'>
+                <Form.Label>Tipo</Form.Label>
+                <Form.Control
+                  as="select"                  
                   value={this.state.fields.tipo}
                   onChange={(e) => {
                     this.handleChange(e.target.value, "tipo");
@@ -205,38 +198,37 @@ class UbicacionEdit extends Component {
                 >
                   <option value="OBRA">OBRA</option>
                   <option value="OFICINA">OFICINA</option>
-                </Input>
-              </FormGroup>
+                </Form.Control>
+              </Form.Group>
             </Col>
             <Col>
-              <FormGroup>
-                <Label for="descripcion">Descripcion</Label>
+              <Form.Group controlId='ubicacion.descripcion'>
+                <Form.Label>Descripcion</Form.Label>
                 <textarea
-                  ref="descripcion"
-                  cols={70}
-                  rows={3}
-                  maxLength={300}
+                  cols="70"
+                  rows="3"
+                  maxLength="300"
                   placeholder="descripcion"
                   value={this.state.fields.descripcion}
                   onChange={(e) => {
                     this.handleChange(e.target.value, "descripcion");
                   }}
                 />
-              </FormGroup>
+              </Form.Group>
             </Col>
             {ingeniero}
             {oficial}
-            <FormGroup>
-              <Button color="primary" disabled={formState=='saved'} onClick={this.save}>
+            <Form.Group>
+              <Button variant="outline-primary" disabled={formState=='saved'} onClick={this.save}>
                 Guardar
               </Button>{" "}
-              <Button color="secondary" tag={Link} to="/ubicaciones">
+              <Button variant="outline-secondary" href="/ubicaciones">
                 Regresar
               </Button>{" "}
-              <Button color="secondary" onClick={this.resetForm}>
+              <Button variant="outline-secondary" onClick={this.resetForm}>
                 Nuevo
               </Button>
-            </FormGroup>
+            </Form.Group>
             <Col>{messageLabel}</Col>
           </Form>
         </Container>
