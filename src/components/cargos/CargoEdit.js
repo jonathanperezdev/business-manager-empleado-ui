@@ -97,7 +97,7 @@ class CargoEdit extends Component {
 
     let messageLabel;
     if (formState == "error") {
-      messageLabel = (   <Alert variant="danger">{error.response.data.message}</Alert>);
+      messageLabel = (<Alert variant="danger">{error.response.data.message}</Alert>);
     } else if (formState == "invalid") {
       messageLabel = <Alert variant="danger">El fomulario tiene errores</Alert>;
     } else if (formState == "saved") {
@@ -123,7 +123,7 @@ class CargoEdit extends Component {
             <Col>
               <Form.Group controlId="cargo.nombre">
                 <Form.Label>Cargo</Form.Label>
-                <Form.Control type="text"                  
+                <Form.Control
                   type="text"
                   size="30"
                   placeholder="Cargo"
@@ -152,7 +152,7 @@ class CargoEdit extends Component {
             </Col>
             <Col>
               <Form.Group controlId="cargo.funciones">
-                <Form.Label for="funciones">Funciones</Form.Label>
+                <Form.Label>Funciones</Form.Label>
                 <Form.Control as="textarea" 
                   rows="3"
                   cols="70"

@@ -318,7 +318,7 @@ class AddEmpleadoUbicacion extends Component {
           <h2>Agregar Empleados a {ubicacion.nombre}</h2>
           <Form className="form">
             <Col>
-              <Row form>
+              <Row>
               <Col>
                   <Form.Group  controlId='confUbicacion.tipoDocumento'>
                     <Form.Label>Tipo Documento</Form.Label>

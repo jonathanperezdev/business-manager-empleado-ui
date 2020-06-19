@@ -6,7 +6,7 @@ const UbicacionDesc = ({ubicacion}) => {
     <Col>
       <Container className="App">
         <h5>Ubicacion</h5>
-        <Row form>
+        <Row>
           <Col sm="2">
             <Form.Group>
               <Form.Label>Id</Form.Label>

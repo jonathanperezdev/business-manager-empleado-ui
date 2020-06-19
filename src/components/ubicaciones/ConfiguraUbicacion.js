@@ -328,7 +328,7 @@ class ConfiguraUbicacion extends Component {
 
       ingenieroOficialInput = (
         <Col>
-          <Row form>
+          <Row>
             <Col>
               <Form.Group controlId='confUbicacion.ingenieros'>
                 <Form.Label>Ingeniero a cargo</Form.Label>

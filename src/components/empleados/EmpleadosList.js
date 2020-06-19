@@ -291,7 +291,7 @@ class EmpleadosList extends Component {
           <h2>Empleados</h2>
           <Form className="form">
             <Col>
-              <Row form>
+              <Row>
                 <Col>
                   <Form.Group controlId="empleado.tipoDocumento">
                     <Form.Label>Tipo</Form.Label>
