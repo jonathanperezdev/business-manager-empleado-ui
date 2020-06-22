@@ -154,7 +154,7 @@ class EmpleadosList extends Component {
     })
       .then(() => {
         let updatedEmpleados = [...this.state.empleados].filter(
-          (i) => i.id !== id
+          (i) => i.id != id
         );
         let isExistData = true;
 
@@ -265,12 +265,8 @@ class EmpleadosList extends Component {
     }
 
     const modal = (
-      <Modal
-        show={this.state.modal}
-        toggle={this.toggle}
-        className={this.props.className}
-      >
-        <Modal.Header toggle={this.toggle}>Confirmar Eliminar</Modal.Header>
+      <Modal show={this.state.modal} onClick={this.toggle} className={this.props.className}>
+        <Modal.Header onClick={this.toggle}>Confirmar Eliminar</Modal.Header>
         <Modal.Body>Esta seguro de eliminar el empleado</Modal.Body>
         <Modal.Footer>
           <Button variant="outline-primary" onClick={() => this.remove(rowId)}>

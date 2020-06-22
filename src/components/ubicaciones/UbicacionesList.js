@@ -69,7 +69,7 @@ class UbicacionesList extends Component {
         'Content-Type': 'application/json'
       }
     }).then(() => {
-      let updatedUbicaciones = [...this.state.ubicaciones].filter(i => i.id !== id);
+      let updatedUbicaciones = [...this.state.ubicaciones].filter(i => i.id != id);
       let isExistData = true;
 
       if(updatedUbicaciones.length == 0){
@@ -128,8 +128,8 @@ class UbicacionesList extends Component {
       onSelect: this.onRowSelect
     };
 
-    const modal = <Modal show={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <Modal.Header toggle={this.toggle}>Confirmar Eliminar</Modal.Header>
+    const modal = <Modal show={this.state.modal} onClick={this.toggle} className={this.props.className}>
+                    <Modal.Header onClick={this.toggle}>Confirmar Eliminar</Modal.Header>
                       <Modal.Body>
                         Esta seguro de eliminar la ubicacion
                       </Modal.Body>

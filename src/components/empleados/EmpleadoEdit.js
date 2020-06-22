@@ -36,7 +36,7 @@ class EmpleadoEdit extends Component {
   }
 
   async componentDidMount() {
-    if (this.props.match.params.id !== 'new') {
+    if (this.props.match.params.id != 'new') {
       
       let idUbicacion;
       await axios.get(PATH_EMPLEADO_SERVICE+`/${this.props.match.params.id}`)

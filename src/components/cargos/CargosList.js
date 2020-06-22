@@ -69,7 +69,7 @@ class CargosList extends Component {
         'Content-Type': 'application/json'
       }
     }).then(() => {
-      let updatedCargos = [...this.state.cargos].filter(i => i.id !== id);
+      let updatedCargos = [...this.state.cargos].filter(i => i.id != id);
       let isExistData = true;
 
       if(updatedCargos.length == 0){
@@ -125,8 +125,8 @@ class CargosList extends Component {
       onSelect: this.onRowSelect
     };
 
-    const modal = <Modal show={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <Modal.Header toggle={this.toggle}>Confirmar Eliminar</Modal.Header>
+    const modal = <Modal show={this.state.modal} onClick={this.toggle} className={this.props.className}>
+                    <Modal.Header onClick={this.toggle}>Confirmar Eliminar</Modal.Header>
                     <Modal.Body>
                       Esta seguro de eliminar el cargo
                     </Modal.Body>

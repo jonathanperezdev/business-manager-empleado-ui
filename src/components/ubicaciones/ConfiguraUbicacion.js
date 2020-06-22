@@ -100,7 +100,7 @@ class ConfiguraUbicacion extends Component {
         })
       );
         
-    if (typeof ubicacion !== "undefined") {
+    if (typeof ubicacion != "undefined") {
       if (ubicacion.tipo == "OBRA") {
         await axios
           .get(PATH_OFICIALES_SERVICE)
@@ -166,7 +166,7 @@ class ConfiguraUbicacion extends Component {
       }));
     } else {
       this.setState(() => ({
-        selected: this.state.selected.filter((x) => x !== row.id),
+        selected: this.state.selected.filter((x) => x != row.id),
       }));
     }
   };
@@ -183,7 +183,7 @@ class ConfiguraUbicacion extends Component {
     let { fields, ubicaciones } = this.state;
 
     let ubicacionSelected = ubicaciones.find((x) => x.id == fields.idUbicacion);
-    if (ubicacionSelected.tipo === "OFICINA") {
+    if (ubicacionSelected.tipo == "OFICINA") {
       fields.ingenieroACargo = "";
       fields.oficialACargo = "";
     }
@@ -305,7 +305,7 @@ class ConfiguraUbicacion extends Component {
     let ingenieroOficialInput;
     let ubicacion = ubicaciones.find((x) => x.id == fields.idUbicacion);
 
-    if (typeof ubicacion !== "undefined" && ubicacion.tipo == "OBRA") {
+    if (typeof ubicacion != "undefined" && ubicacion.tipo == "OBRA") {
       optionIngeniero = ingenieros.map((ingeniero) => (
         <option
           key={ingeniero.id}
@@ -425,14 +425,8 @@ class ConfiguraUbicacion extends Component {
     }    
 
     const modalSave = (
-      <Modal
-        show={this.state.modalSave}
-        toggle={this.toggleSave}
-        className={this.props.className}
-      >
-        <Modal.Header toggle={this.toggleSave}>
-          Confirmar guardar ubicacion
-        </Modal.Header>
+      <Modal show={this.state.modalSave} onClick={this.toggleSave} className={this.props.className}>
+        <Modal.Header onClick={this.toggleSave}>Confirmar guardar ubicacion</Modal.Header>
         <Modal.Body>
           Esta seguro de guardar la ubicacion
         </Modal.Body>
@@ -448,12 +442,8 @@ class ConfiguraUbicacion extends Component {
     );
 
     const modalQuitarEmpleados = (
-      <Modal
-        show={this.state.modalEmpleados}
-        toggle={this.toggleEmpleados}
-        className={this.props.className}
-      >
-        <Modal.Header toggle={this.toggleEmpleados}>
+      <Modal show={this.state.modalEmpleados} onClick={this.toggleEmpleados} className={this.props.className}>
+        <Modal.Header onClick={this.toggleEmpleados}>
           Quitar Empleados
         </Modal.Header>
         <Modal.Body>

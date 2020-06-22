@@ -175,7 +175,7 @@ class AddEmpleadoUbicacion extends Component {
       }));
     } else {
       this.setState(() => ({
-        selected: this.state.selected.filter((x) => x !== row.id),
+        selected: this.state.selected.filter((x) => x != row.id),
       }));
     }
   };
@@ -289,13 +289,8 @@ class AddEmpleadoUbicacion extends Component {
     }
 
     const modal = (
-      <Modal
-        show={this.state.modal}
-        toggle={this.toggle}
-        className={this.props.className}>
-        <Modal.Header toggle={this.toggle}>
-          Confirmar Agregar Empleados
-        </Modal.Header>
+      <Modal show={this.state.modal} onClick={this.toggle} className={this.props.className}>
+        <Modal.Header onClick={this.toggle}>Confirmar Agregar Empleados</Modal.Header>
         <Modal.Body>
           Esta seguro de agregar empleados a {ubicacion.nombre}
         </Modal.Body>

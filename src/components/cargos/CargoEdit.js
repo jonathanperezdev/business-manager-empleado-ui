@@ -32,7 +32,7 @@ class CargoEdit extends Component {
   }
 
   async componentDidMount() {
-    if (this.props.match.params.id !== "new") {
+    if (this.props.match.params.id != "new") {
       axios.get(PATH_CARGO_SERVICE + `/${this.props.match.params.id}`)
       .then(result => this.setState({ fields: result.data, formState: "success" }))
       .catch(error => this.setState({error, isLoading: false, formState: "error"}));
