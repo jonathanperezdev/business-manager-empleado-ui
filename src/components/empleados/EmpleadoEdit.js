@@ -36,7 +36,7 @@ class EmpleadoEdit extends Component {
   }
 
   async componentDidMount() {
-    if (this.props.match.params.id !== 'new') {
+    if (this.props.match.params.id != 'new') {
       
       let idUbicacion;
       await axios.get(PATH_EMPLEADO_SERVICE+`/${this.props.match.params.id}`)
@@ -209,7 +209,7 @@ class EmpleadoEdit extends Component {
           {title}
           <Form className="form">
             <Col>
-              <Row form>
+              <Row>
               <Col sm="2">
                   <Form.Group>
                     <Form.Label>Cargo</Form.Label>
@@ -256,7 +256,7 @@ class EmpleadoEdit extends Component {
               </Row>
             </Col>
             <Col>
-              <Row form>                
+              <Row>                
                 <Col>
                   <Form.Group controlId="empleado.nombres">
                     <Form.Label>Nombres</Form.Label>
@@ -290,7 +290,7 @@ class EmpleadoEdit extends Component {
               </Row>
             </Col>
             <Col>
-              <Row form>
+              <Row>
                 <Col sm="2">
                   <Form.Group controlId="empleado.salario">
                     <Form.Label>Salario</Form.Label>
@@ -356,7 +356,7 @@ class EmpleadoEdit extends Component {
             <Col>
               <Container className="App">
                 <h5>Contacto de Emergencia</h5>
-                <Row form>
+                <Row>
                   <Col>
                     <Form.Group controlId="empleado.contactoEmergenciaNombres">
                       <Form.Label>Nombres</Form.Label>

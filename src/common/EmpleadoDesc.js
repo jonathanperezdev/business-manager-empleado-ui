@@ -6,7 +6,7 @@ const EmpleadoDesc = ({title, employee}) => {
     <Col>
       <Container className="App">
         <h5>{title}</h5>
-        <Row form>
+        <Row>
           <Col sm="2">
             <Form.Group>
               <Form.Label>Id</Form.Label>
