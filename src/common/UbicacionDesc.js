@@ -10,7 +10,7 @@ const UbicacionDesc = ({ubicacion}) => {
           <Col sm="2">
             <Form.Group>
               <Form.Label>Id</Form.Label>
-              <Form.Control type="text"
+              <Form.Control
                 disabled
                 value={ubicacion.id}/>
             </Form.Group>
@@ -18,7 +18,7 @@ const UbicacionDesc = ({ubicacion}) => {
           <Col>
             <Form.Group>
               <Form.Label>Nombre</Form.Label>
-              <Form.Control type="text"
+              <Form.Control
                 disabled
                 value={ubicacion.nombre}/>
             </Form.Group>
@@ -26,7 +26,7 @@ const UbicacionDesc = ({ubicacion}) => {
           <Col sm="3">
             <Form.Group>
               <Form.Label>Tipo</Form.Label>
-              <Form.Control type="text"
+              <Form.Control
                 disabled
                 value={ubicacion.tipo}/>
             </Form.Group>
