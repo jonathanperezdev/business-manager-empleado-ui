@@ -17,7 +17,7 @@ const EmpleadoDesc = ({title, employee}) => {
           </Col>
           <Col>
             <Form.Group>
-              <Form.Label for="contactoEmergenciaApellidos">Nombres</Form.Label>
+              <Form.Label>Nombres</Form.Label>
               <Form.Control
                 disabled
                 value={employee.nombres}/>
