@@ -331,8 +331,7 @@ class AddEmpleadoUbicacion extends Component {
                 <Col>
                   <Form.Group  controlId='confUbicacion.numeroDocumento'>
                     <Form.Label>Numero Documento</Form.Label>
-                    <Form.Control                      
-                      type="text"
+                    <Form.Control
                       size="15"
                       placeholder="Numero de documento"
                       value={this.state.fields.numeroDocumento}
@@ -345,8 +344,7 @@ class AddEmpleadoUbicacion extends Component {
                 <Col>
                   <Form.Group  controlId='confUbicacion.nombres'>
                     <Form.Label>Nombre</Form.Label>
-                    <Form.Control
-                      type="text"
+                    <Form.Control                      
                       size="30"
                       placeholder="Nombres del empleado"
                       value={this.state.fields.nombres}
@@ -360,8 +358,7 @@ class AddEmpleadoUbicacion extends Component {
                   <Form.Group  controlId='confUbicacion.apellidos'>
                     <Form.Label>Apellidos</Form.Label>
                     <Form.Control
-                      ref="apellidos"
-                      type="text"
+                      ref="apellidos"                      
                       size="30"
                       placeholder="Apellidos del empleado"
                       value={this.state.fields.apellidos}

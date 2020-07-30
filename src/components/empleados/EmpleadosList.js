@@ -306,7 +306,6 @@ class EmpleadosList extends Component {
                   <Form.Group controlId="empleado.numeroDocumento">
                     <Form.Label>Numero</Form.Label>
                     <Form.Control                      
-                      type="text"
                       size="15"
                       placeholder="Numero de documento"
                       value={this.state.fields.numeroDocumento}
@@ -319,8 +318,7 @@ class EmpleadosList extends Component {
                 <Col>
                   <Form.Group controlId="empleado.nombres">
                     <Form.Label>Nombre</Form.Label>
-                    <Form.Control
-                      type="text"
+                    <Form.Control                      
                       size="30"
                       placeholder="Nombres del empleado"
                       value={this.state.fields.nombres}
@@ -333,8 +331,7 @@ class EmpleadosList extends Component {
                 <Col>
                   <Form.Group controlId="empleado.apellidos">
                     <Form.Label>Apellidos</Form.Label>
-                    <Form.Control
-                      type="text"
+                    <Form.Control                      
                       size="30"
                       placeholder="Apellidos del empleado"
                       value={this.state.fields.apellidos}

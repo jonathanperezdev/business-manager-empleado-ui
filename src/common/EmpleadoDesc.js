@@ -11,15 +11,14 @@ const EmpleadoDesc = ({title, employee}) => {
             <Form.Group>
               <Form.Label>Id</Form.Label>
               <Form.Control 
-                type="text"
                 disabled
                 value={employee.id}/>
             </Form.Group>
           </Col>
           <Col>
             <Form.Group>
-              <Form.Label for="contactoEmergenciaApellidos">Nombres</Form.Label>
-              <Form.Control type="text"
+              <Form.Label>Nombres</Form.Label>
+              <Form.Control
                 disabled
                 value={employee.nombres}/>
             </Form.Group>
@@ -27,7 +26,7 @@ const EmpleadoDesc = ({title, employee}) => {
           <Col sm="3">
             <Form.Group>
               <Form.Label>Apellidos</Form.Label>
-              <Form.Control type="text"
+              <Form.Control
                 disabled
                 value={employee.apellidos}/>
             </Form.Group>

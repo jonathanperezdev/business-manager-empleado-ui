@@ -159,8 +159,7 @@ class UbicacionEdit extends Component {
             <Col>
               <Form.Group controlId='ubicacion.nombre' >
                 <Form.Label>Nombre</Form.Label>
-                <Form.Control
-                  type="text"
+                <Form.Control                  
                   size="30"
                   placeholder="Nombre de la obra u oficina"
                   value={this.state.fields.nombre}
@@ -174,8 +173,7 @@ class UbicacionEdit extends Component {
             <Col>
               <Form.Group controlId='ubicacion.direccion'>
                 <Form.Label>Direccion</Form.Label>
-                <Form.Control                  
-                  type="text"
+                <Form.Control                                    
                   size="70"
                   placeholder="Direccion de la obra u oficina"
                   value={this.state.fields.direccion}

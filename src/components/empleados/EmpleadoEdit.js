@@ -260,8 +260,7 @@ class EmpleadoEdit extends Component {
                 <Col>
                   <Form.Group controlId="empleado.nombres">
                     <Form.Label>Nombres</Form.Label>
-                    <Form.Control                      
-                      type="text"
+                    <Form.Control
                       size="30"
                       placeholder="Nombres del empleado"
                       value={this.state.fields.nombres}
@@ -275,8 +274,7 @@ class EmpleadoEdit extends Component {
                 <Col>
                   <Form.Group controlId="empleado.apellidos">
                     <Form.Label>Apellidos</Form.Label>
-                    <Form.Control                      
-                      type="text"
+                    <Form.Control
                       size="30"
                       placeholder="Apellidos del empleado"
                       value={this.state.fields.apellidos}
@@ -309,8 +307,7 @@ class EmpleadoEdit extends Component {
                 <Col>
                   <Form.Group controlId="empleado.direccion">
                     <Form.Label>Direccion</Form.Label>
-                    <Form.Control                      
-                      type="text"
+                    <Form.Control
                       size="70"
                       placeholder="Direccion del empleado"
                       value={this.state.fields.direccion}
@@ -360,8 +357,7 @@ class EmpleadoEdit extends Component {
                   <Col>
                     <Form.Group controlId="empleado.contactoEmergenciaNombres">
                       <Form.Label>Nombres</Form.Label>
-                      <Form.Control                        
-                        type="text"
+                      <Form.Control
                         size="30"
                         placeholder="Nombres"
                         value={this.state.fields.contactoEmergenciaNombres}
@@ -377,8 +373,7 @@ class EmpleadoEdit extends Component {
                   <Col>
                     <Form.Group controlId="empleado.contactoEmergenciaApellidos">
                       <Form.Label>Apellidos</Form.Label>
-                      <Form.Control                        
-                        type="text"
+                      <Form.Control
                         size="30"
                         placeholder="Apellidos"
                         value={this.state.fields.contactoEmergenciaApellidos}

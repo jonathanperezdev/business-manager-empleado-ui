@@ -123,8 +123,7 @@ class CargoEdit extends Component {
             <Col>
               <Form.Group controlId="cargo.nombre">
                 <Form.Label>Cargo</Form.Label>
-                <Form.Control
-                  type="text"
+                <Form.Control                  
                   size="30"
                   placeholder="Cargo"
                   value={this.state.fields.nombre}
