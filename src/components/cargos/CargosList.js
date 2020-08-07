@@ -9,7 +9,6 @@ import Loading from 'common/Loading';
 import axios from 'axios';
 const options = Constant.OPTIONS_TABLE;
 
-const PATH_CARGOS_SERVICE = Constant.EMPLEADO_API+'/cargos';
 const PATH_CARGO_SERVICE = Constant.EMPLEADO_API+'/cargo';
 
 let rowId = '';
@@ -32,7 +31,7 @@ class CargosList extends Component {
   componentDidMount() {
     this.setState({isLoading: true});
 
-    axios.get(PATH_CARGOS_SERVICE)
+    axios.get(PATH_CARGO_SERVICE+'/all')
       .then(result => {
         if(result.data.length == 0){
           this.setState({isLoading: false, isExistData: false});

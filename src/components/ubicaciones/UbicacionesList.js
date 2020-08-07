@@ -9,7 +9,6 @@ import axios from 'axios';
 import Loading from 'common/Loading';
 const options = Constant.OPTIONS_TABLE;
 
-const PATH_UBICACIONES_SERVICE = Constant.EMPLEADO_API+'/ubicaciones';
 const PATH_UBICACION_SERVICE = Constant.EMPLEADO_API+'/ubicacion';
 
 let rowId = '';
@@ -32,7 +31,7 @@ class UbicacionesList extends Component {
   componentDidMount() {
     this.setState({isLoading: true});
 
-    axios.get(PATH_UBICACIONES_SERVICE)
+    axios.get(PATH_UBICACION_SERVICE+'/all')
       .then(result => {
         if(result.data.length == 0){
           this.setState({isLoading: false, isExistData: false});

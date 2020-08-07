@@ -12,7 +12,7 @@ import 'css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const PATH_EMPLEADO_SERVICE = Constant.EMPLEADO_API+'/empleado';
-const PATH_CARGOS_SERVICE = Constant.EMPLEADO_API+'/cargos';
+const PATH_CARGOS_SERVICE = Constant.EMPLEADO_API+'/cargo/all';
 const PATH_TIPO_DOCUMENTOS_SERVICE = Constant.EMPLEADO_API+'/tipoDocumentos';
 const PATH_UBICACION_SERVICE = Constant.EMPLEADO_API + '/ubicacion';
 

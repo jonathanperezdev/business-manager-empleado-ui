@@ -16,18 +16,18 @@ import Loading from 'common/Loading';
 import axios from "axios";
 const options = Constant.OPTIONS_TABLE;
 
-const PATH_UBICACIONES_SERVICE =
-  Constant.EMPLEADO_API + '/ubicaciones';
+const PATH_UBICACION_SERVICE =
+  Constant.EMPLEADO_API + '/ubicacion';
 const PATH_OFICIALES_SERVICE =
-  Constant.EMPLEADO_API + '/empleados/oficial';
+  Constant.EMPLEADO_API + '/empleado/oficial';
 const PATH_INGENIEROS_SERVICE =
-  Constant.EMPLEADO_API + '/empleados/residente';
+  Constant.EMPLEADO_API + '/empleado/residente';
 const PATH_UBICACION_CONFIGURACION =
   Constant.EMPLEADO_API + '/ubicacion/configuracion';
 const FIND_EMPLEADOS_UBICACION =
   Constant.EMPLEADO_API + '/empleado/ubicacion/';
 const PATH_EMPLEADO_UBICACION_SERVICE =
-  Constant.EMPLEADO_API + '/empleados/ubicacion/';
+  Constant.EMPLEADO_API + '/empleado/ubicacion/';
 
 class ConfiguraUbicacion extends Component {
   emptyState = {
@@ -80,7 +80,7 @@ class ConfiguraUbicacion extends Component {
 
     let ubicacion;    
     await axios
-      .get(PATH_UBICACIONES_SERVICE)
+      .get(PATH_UBICACION_SERVICE+'/all')
       .then((result) => {
         ubicacion =
           id == "new" ? result.data[0] : result.data.find((x) => x.id == id);        

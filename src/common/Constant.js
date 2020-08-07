@@ -1,4 +1,4 @@
-const EMPLEADO_API = '/empleado/v1/api';
+const EMPLEADO_API = '/empleado';
 
 //Table options
 const OPTIONS_TABLE = {

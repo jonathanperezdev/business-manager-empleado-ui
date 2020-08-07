@@ -18,8 +18,8 @@ import axios from "axios";
 
 const PATH_EMPLEADO_SERVICE = Constant.EMPLEADO_API+'/empleado';
 const PATH_TIPO_DOCUMENTOS_SERVICE = Constant.EMPLEADO_API+'/tipoDocumentos';
-const PATH_EMPLEADOS_SEARCH_SERVICE =
-  Constant.EMPLEADO_API + '/empleados/search';
+const PATH_EMPLEADO_SEARCH_SERVICE =
+  Constant.EMPLEADO_API + '/empleado/search';
 
 const options = Constant.OPTIONS_TABLE;
 let rowId = "";
@@ -82,7 +82,7 @@ class EmpleadosList extends Component {
       });
     } else {
       await axios
-        .get(PATH_EMPLEADOS_SEARCH_SERVICE, {
+        .get(PATH_EMPLEADO_SEARCH_SERVICE, {
           params: {
             tipoDocumento: fields.tipoDocumento,
             numeroDocumento: fields.numeroDocumento,
