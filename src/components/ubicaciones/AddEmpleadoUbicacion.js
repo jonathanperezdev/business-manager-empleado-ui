@@ -17,12 +17,12 @@ import Constant from "common/Constant";
 import Loading from 'common/Loading';
 import axios from "axios";
 
-const PATH_EMPLEADOS_SEARCH_SERVICE =
-  Constant.EMPLEADO_API + '/empleados/searchWithTipoUbicacion';
+const PATH_EMPLEADO_SEARCH_SERVICE =
+  Constant.EMPLEADO_API + '/empleado/searchWithTipoUbicacion';
 const PATH_UBICACION_SERVICE =
   Constant.EMPLEADO_API + '/ubicacion';
 const PATH_EMPLEADO_UBICACION_SERVICE =
-  Constant.EMPLEADO_API + '/empleados/ubicacion/';
+  Constant.EMPLEADO_API + '/empleado/ubicacion/';
 const PATH_TIPO_DOCUMENTOS_SERVICE =
   Constant.EMPLEADO_API + '/tipoDocumentos';
 
@@ -133,7 +133,7 @@ class AddEmpleadoUbicacion extends Component {
       });
     } else {
       await axios
-        .get(PATH_EMPLEADOS_SEARCH_SERVICE, {
+        .get(PATH_EMPLEADO_SEARCH_SERVICE, {
           params: {
             idUbicacion: ubicacion.id,
             tipoDocumento: fields.tipoDocumento,

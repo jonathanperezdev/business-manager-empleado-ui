@@ -24,7 +24,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://BMGATEWAY:5555/BMEMPLEADO/",
+  "proxy": "http://BMGATEWAY:5555/BMEMPLEADO",
   "eslintConfig": {
     "extends": "react-app"
   },
