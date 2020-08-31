@@ -1,12 +1,7 @@
 import React, { Component } from "react";
 import { Navbar, NavDropdown } from "react-bootstrap";
-import { Link } from "react-router-dom";
 
 export default class AppNavbar extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <Navbar bg="primary" variant="dark">
