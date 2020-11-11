@@ -29,33 +29,22 @@ class EmpleadoEdit extends Component {
       tipoDocumentos:[],
       firstCargo:'',
       firstTipoDocumento:'',
-      ubicacion: {}
+      ubicacion: {},
+      riesgosLaborales: [],
+      firstRiesgoLaboral: ''
     }
 
     this.resetForm();
   }
 
   async componentDidMount() {
-    if (this.props.match.params.id != 'new') {
-      
-      let idUbicacion;
-      await axios.get(PATH_EMPLEADO_SERVICE+`/${this.props.match.params.id}`)
-      .then(result => {
-        idUbicacion = result.data.ubicacion;
-        this.setState({fields: result.data, formState: 'success', isLoading: false})})
-      .catch(error => this.setState({ error, formState: "error", isLoading: false}));
-      
-      await axios.get(PATH_UBICACION_SERVICE+`/${idUbicacion}`)
-      .then(result => this.setState({ubicacion: result.data, formState: 'success', isLoading: false}))
-      .catch(error => this.setState({ error, formState: "error", isLoading: false}));
-    }
-
     await axios.get(PATH_CARGOS_SERVICE)
     .then(result => {
-      let {fields} = this.state;
+      let {fields} = this.state;     
+      
       fields.cargo = result.data[0].id;
-        
       let firstCargo = result.data[0].id;
+
       this.setState({cargos: result.data, fields: fields, firstCargo: firstCargo, formState: 'success', isLoading: false});
     }).catch(error => this.setState({
       error, formState: "error", isLoading: false
@@ -64,17 +53,45 @@ class EmpleadoEdit extends Component {
     await axios.get(PATH_TIPO_DOCUMENTOS_SERVICE)
       .then(result => {
         let {fields} = this.state;
-        fields.tipoDocumento = result.data[0].id;
         
+        fields.tipoDocumento = result.data[0].id;
         let firstTipoDocumento = result.data[0].id;
+
         this.setState({tipoDocumentos: result.data, fields: fields, firstTipoDocumento: firstTipoDocumento, formState: 'success', isLoading: false});
       }).catch(error => this.setState({
         error, formState: "error", isLoading: false})
     );
+
+    await axios.get(PATH_EMPLEADO_SERVICE+'/riesgosLaborales')
+      .then(result => {
+        let {fields} = this.state;
+        
+        fields.riesgoLaboral = result.data[0];
+        let firstRiesgoLaboral = result.data[0];
+        this.setState({riesgosLaborales: result.data, fields: fields,firstRiesgoLaboral: firstRiesgoLaboral, formState: 'success', isLoading: false});
+      }).catch(error => this.setState({
+        error, formState: "error", isLoading: false})
+    );
+
+    if (this.props.match.params.id != 'new') {
+      
+      let idUbicacion;
+      await axios.get(PATH_EMPLEADO_SERVICE+`/${this.props.match.params.id}`)
+      .then(result => {
+        idUbicacion = result.data.ubicacion;        
+        this.setState({fields: result.data, formState: 'success', isLoading: false})})
+      .catch(error => this.setState({ error, formState: "error", isLoading: false}));
+      
+      if(idUbicacion){
+        await axios.get(PATH_UBICACION_SERVICE+`/${idUbicacion}`)
+        .then(result => this.setState({ubicacion: result.data, formState: 'success', isLoading: false}))
+        .catch(error => this.setState({ error, formState: "error", isLoading: false}));
+      }
+    }
   }
 
   resetForm = () =>{
-    let {fields, firstTipoDocumento, firstCargo} = this.state;
+    let {fields, firstTipoDocumento, firstCargo, firstRiesgoLaboral} = this.state;
     
     fields.tipoDocumento = firstTipoDocumento;
     fields.numeroDocumento = '';
@@ -87,7 +104,8 @@ class EmpleadoEdit extends Component {
     fields.telefono = '';
     fields.contactoEmergenciaNombres = '';
     fields.contactoEmergenciaApellidos = '';
-    fields.contactoEmergenciaTelefono = '';    
+    fields.contactoEmergenciaTelefono = '';
+    fields.riesgoLaboral = firstRiesgoLaboral;
 
     this.setState({fields: fields, formState: 'new'});
   }
@@ -139,7 +157,7 @@ class EmpleadoEdit extends Component {
   };
 
   render = () => {
-    const {fields, formState, errors, error, cargos, tipoDocumentos, firstCargo, firstTipoDocumento, isLoading, ubicacion} = this.state;
+    const {fields, formState, errors, error, cargos, tipoDocumentos, firstCargo, firstTipoDocumento, isLoading, ubicacion, riesgosLaborales, firstRiesgoLaboral} = this.state;
     
     if (isLoading) {
       return  <Loading/> 
@@ -181,14 +199,23 @@ class EmpleadoEdit extends Component {
 
     let optionCargos = cargos.map((cargo) =>
       <option key={cargo.id}
-        value={cargo.id}
-        default={(fields.id)?fields.cargo:firstCargo} >{cargo.nombre}</option>
+        value={cargo.id}>
+          {cargo.nombre}
+      </option>
+    );
+    
+    let optionTipoDocumentos = tipoDocumentos.map((tipoDocumento) =>      
+      <option key={tipoDocumento.id}
+        value={tipoDocumento.id}>
+          {tipoDocumento.nombre}
+      </option>
     );
 
-    let optionTipoDocumentos = tipoDocumentos.map((tipoDocumento) =>     
-      <option key={tipoDocumento.id}
-        value={tipoDocumento.id}
-        default={(fields.id)?fields.tipoDocumento:firstTipoDocumento} >{tipoDocumento.nombre}</option>
+    let optionRiesgosLaborales = riesgosLaborales.map((riesgoLaboral) =>     
+      <option key={riesgoLaboral}
+        value={riesgoLaboral}>
+          {riesgoLaboral}
+      </option>
     );
 
     let UbicacionComponent;
@@ -200,7 +227,7 @@ class EmpleadoEdit extends Component {
     }
 
     const id = fields["id"];
-    const title = <h2>{id ? 'Modificar Empleado' : 'Agregar Empleado'}</h2>;  
+    const title = <h2>{id ? 'Modificar Empleado' : 'Agregar Empleado'}</h2>;    
     
     return (
       <div>
@@ -215,12 +242,12 @@ class EmpleadoEdit extends Component {
                     <Form.Label>Cargo</Form.Label>
                     <Form.Control                      
                       as="select"
-                      value={this.state.fields.cargo}
+                      value={this.state.fields.cargo}                      
                       onChange={(e) => {
                         this.handleChange(e.target.value, "cargo");
                       }}
                     >
-                      {optionCargos}
+                    {optionCargos}
                     </Form.Control>
                   </Form.Group>
                 </Col>
@@ -232,8 +259,7 @@ class EmpleadoEdit extends Component {
                       value={this.state.fields.tipoDocumento}
                       onChange={(e) => {
                         this.handleChange(e.target.value, "tipoDocumento");
-                      }}
-                    >
+                      }}>
                       {optionTipoDocumentos}
                     </Form.Control>
                   </Form.Group>
@@ -334,20 +360,37 @@ class EmpleadoEdit extends Component {
                 </Col>
               </Row>
             </Col>
-
-            <Col sm="2">
-              <Form.Group controlId="empleado.telefono">
-                <Form.Label>Telefono</Form.Label>
-                <Form.Control                  
-                  type="number"
-                  size="13"
-                  placeholder="Telefono"
-                  value={this.state.fields.telefono}
-                  onChange={(e) => {
-                    this.handleChange(e.target.value, "telefono");
-                  }}
-                />
-              </Form.Group>
+            <Col>
+              <Row>
+                <Col sm="2">
+                  <Form.Group controlId="empleado.telefono">
+                    <Form.Label>Telefono</Form.Label>
+                    <Form.Control                  
+                      type="number"
+                      size="13"
+                      placeholder="Telefono"
+                      value={this.state.fields.telefono}
+                      onChange={(e) => {
+                        this.handleChange(e.target.value, "telefono");
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group controlId="empleado.riesgoLaboral">
+                    <Form.Label>Riesgo Laboral</Form.Label>
+                    <Form.Control                      
+                      as="select"
+                      value={this.state.fields.riesgoLaboral}
+                      onChange={(e) => {
+                        this.handleChange(e.target.value, "riesgoLaboral");
+                      }}>
+                    {optionRiesgosLaborales}
+                    </Form.Control>
+                  </Form.Group>
+                </Col>
+                <Col/>
+              </Row>
             </Col>
 
             <Col>

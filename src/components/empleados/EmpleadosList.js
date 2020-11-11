@@ -203,9 +203,7 @@ class EmpleadosList extends Component {
     let optionTipoDocumentos = tipoDocumentos.map((tipoDocumento) => (
       <option
         key={tipoDocumento.id}
-        value={tipoDocumento.id}
-        default={fields.id ? fields.tipoDocumento : firstTipoDocumento}
-      >
+        value={tipoDocumento.id}>
         {tipoDocumento.nombre}
       </option>
     ));

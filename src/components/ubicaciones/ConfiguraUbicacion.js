@@ -19,9 +19,9 @@ const options = Constant.OPTIONS_TABLE;
 const PATH_UBICACION_SERVICE =
   Constant.EMPLEADO_API + '/ubicacion';
 const PATH_OFICIALES_SERVICE =
-  Constant.EMPLEADO_API + '/empleado/oficial';
+  Constant.EMPLEADO_API + '/empleado/cargo/oficial';
 const PATH_INGENIEROS_SERVICE =
-  Constant.EMPLEADO_API + '/empleado/residente';
+  Constant.EMPLEADO_API + '/empleado/cargo/residente';
 const PATH_UBICACION_CONFIGURACION =
   Constant.EMPLEADO_API + '/ubicacion/configuracion';
 const FIND_EMPLEADOS_UBICACION =
@@ -291,9 +291,7 @@ class ConfiguraUbicacion extends Component {
     let optionUbicacion = ubicaciones.map((ubicacion) => (
       <option
         key={ubicacion.id}
-        value={ubicacion.id}
-        default={selectedUbicacion}
-      >
+        value={ubicacion.id}>
         {ubicacion.nombre}
         {" - "}
         {ubicacion.tipo}
@@ -309,9 +307,7 @@ class ConfiguraUbicacion extends Component {
       optionIngeniero = ingenieros.map((ingeniero) => (
         <option
           key={ingeniero.id}
-          value={ingeniero.id}
-          default={selectedIngeniero}
-        >
+          value={ingeniero.id}>
           {ingeniero.nombres}
           {" - "}
           {ingeniero.apellidos}
@@ -319,7 +315,7 @@ class ConfiguraUbicacion extends Component {
       ));
 
       optionOficial = oficiales.map((oficial) => (
-        <option key={oficial.id} value={oficial.id} default={selectedOficial}>
+        <option key={oficial.id} value={oficial.id}>
           {oficial.nombres}
           {" - "}
           {oficial.apellidos}
@@ -339,9 +335,7 @@ class ConfiguraUbicacion extends Component {
                     this.handleChange(e.target.value, "ingenieroACargo");
                   }}
                 >
-                  <option default={selectedIngeniero} value="null">
-                    Seleccionar
-                  </option>
+                  <option value="null">Seleccionar</option>
                   {optionIngeniero}
                 </Form.Control>
               </Form.Group>
@@ -356,9 +350,7 @@ class ConfiguraUbicacion extends Component {
                     this.handleChange(e.target.value, "oficialACargo");
                   }}
                 >
-                  <option default={selectedOficial} value="null">
-                    Seleccionar
-                  </option>
+                  <option value="null">Seleccionar</option>
                   {optionOficial}
                 </Form.Control>
               </Form.Group>
