@@ -19,9 +19,9 @@ const options = Constant.OPTIONS_TABLE;
 const PATH_UBICACION_SERVICE =
   Constant.EMPLEADO_API + '/ubicacion';
 const PATH_OFICIALES_SERVICE =
-  Constant.EMPLEADO_API + '/empleado/oficial';
+  Constant.EMPLEADO_API + '/empleado/cargo/oficial';
 const PATH_INGENIEROS_SERVICE =
-  Constant.EMPLEADO_API + '/empleado/residente';
+  Constant.EMPLEADO_API + '/empleado/cargo/residente';
 const PATH_UBICACION_CONFIGURACION =
   Constant.EMPLEADO_API + '/ubicacion/configuracion';
 const FIND_EMPLEADOS_UBICACION =
